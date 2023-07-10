@@ -1,0 +1,33 @@
+{
+  "name": "barber",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@bull-board/express": "^5.2.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
+    "bull": "^4.10.4",
+    "cloudinary": "^1.33.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.19",
+    "npm-run-all": "^4.1.5",
+    "vercel": "^28.15.2"
+  },
+  "devDependencies": {
+    "sucrase": "^3.25.0"
+  },
+  "scripts": {
+    "start": "npm-run-all -p start:*",
+    "start:server": "nodemon server.js",
+    "start:queue": "nodemon queue.js",
+    "start:threads": "nodemon threads.js"
+  }
+}
