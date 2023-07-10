@@ -312,7 +312,7 @@ class UsuarioController {
                         } else {
                             const email = JSON.stringify(result[0].Usr_Email).slice(0, -1).slice(1 | 1);
                             const key = JSON.stringify(result[0].Email).slice(0, -1).slice(1 | 1);
-                            const link = `https://app-barber.vercel.app/${key}`;
+                            const link = `https://app-barber-web-zeta.vercel.app/${key}`;
 
                             const data = {
                                 email,
