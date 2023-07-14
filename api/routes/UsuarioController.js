@@ -10,7 +10,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -30,7 +30,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * from usuario WHERE Usr_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (!result) {
                             return res.status(404).json();
                         }
@@ -52,7 +52,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Email = "${email}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                     
                         if (JSON.stringify(result) != '[]') {
                             return res.status(400).json('Email ja cadastrado');
@@ -60,7 +60,7 @@ class UsuarioController {
                             conn.query(
                                 `SELECT * FROM usuario WHERE Usr_CPF = "${cpf}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                                     if (JSON.stringify(result) != '[]') {
                                         return res.status(406).json('CPF ja cadastrado');
@@ -91,7 +91,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Email = "${email}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                     
                         if (JSON.stringify(result) != '[]') {
                             return res.status(400).json('Email ja cadastrado');
@@ -99,7 +99,7 @@ class UsuarioController {
                             conn.query(
                                 `SELECT * FROM usuario WHERE Usr_CPF = "${cpf}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                                     if (JSON.stringify(result) != '[]') {
                                         return res.status(406).json('CPF ja cadastrado');
@@ -108,7 +108,7 @@ class UsuarioController {
                                             `INSERT INTO usuario (Usr_Email, Usr_Nome, Usr_Senha, Usr_Contato, Usr_CPF, Usr_Tipo) VALUES ` + 
                                             `("${email}", "${nome}", "${encryptedPassword}", ${contato != ''?`"${contato}"`:'NULL'}, ${cpf != ''?`"${cpf}"`:'NULL'}, "${tipo}")`,
                                             (error, result, fields) => {
-                                                if (error) { return res.status(500).send({ error: error }) }
+                                                if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                                 return res.status(201).json(result);
                                             }
                                         )
@@ -135,7 +135,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Codigo = "${id}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json('Usuário não encontrado');
@@ -144,7 +144,7 @@ class UsuarioController {
                             conn.query(
                                 `SELECT Usr_Email FROM usuario WHERE Usr_Codigo <> ${id} AND Usr_Email = "${email}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                                     if (JSON.stringify(result) != '[]') {
                                         return res.status(400).json('Email ja cadastrado');
@@ -152,7 +152,7 @@ class UsuarioController {
                                         conn.query(
                                             `SELECT * FROM usuario WHERE Usr_CPF = "${cpf}" AND Usr_Codigo <> ${id}`,
                                             (error, result, fields) => {
-                                                if (error) { return res.status(500).send({ error: error }) }
+                                                if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                                                 if (JSON.stringify(result) != '[]') {
                                                     return res.status(406).json('CPF ja cadastrado');
@@ -162,7 +162,7 @@ class UsuarioController {
                                                         `Usr_Contato = ${contato != ''?`"${contato}"`:'NULL'}, Usr_CPF = ${cpf != ''?`"${cpf}"`:'NULL'} ` + 
                                                         `WHERE Usr_Codigo = ${id}`,
                                                         (error, result, fields) => {
-                                                            if (error) { return res.status(500).send({ error: error }) };
+                                                            if (error) { console.log(error); return res.status(500).send({ error: error }) };
             
                                                             return res.status(201).json(result);
                                                         }
@@ -196,7 +196,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Codigo = "${id}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json('Usuário não encontrado');
@@ -209,7 +209,7 @@ class UsuarioController {
                                 conn.query(
                                     `UPDATE usuario SET Usr_Senha = "${encryptedPassword}" WHERE Usr_Codigo = ${id}`,
                                     (error, result, fields) => {
-                                        if (error) { return res.status(500).send({ error: error }) }
+                                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                                         return res.status(201).json(result);
                                     }
@@ -249,7 +249,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Codigo = "${id}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json('Usuário não encontrado');
@@ -257,7 +257,7 @@ class UsuarioController {
                             conn.query(
                                 `DELETE FROM usuario WHERE Usr_Codigo = "${id}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -281,7 +281,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Email = "${email}" AND Usr_Tipo = "B"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json();
                         } else {
@@ -306,7 +306,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT *, MD5(Usr_Senha) AS Email FROM usuario WHERE Usr_Email = "${email}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json();
                         } else {
@@ -348,7 +348,7 @@ class UsuarioController {
                 conn.query(
                     `SELECT * FROM usuario WHERE MD5(Usr_Senha) = "${key}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json();
                         } else {
@@ -356,7 +356,7 @@ class UsuarioController {
                             conn.query(
                                 `UPDATE usuario SET Usr_Senha = "${encryptedPassword}" WHERE Usr_Codigo = ${id}`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )

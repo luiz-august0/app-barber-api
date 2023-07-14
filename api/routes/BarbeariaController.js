@@ -13,7 +13,7 @@ class BarbeariaController {
                     `WHERE BP.Usr_Codigo = ${id} ` + 
                     `GROUP BY B.Barb_Codigo`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -33,7 +33,7 @@ class BarbeariaController {
                 conn.query(
                     `SELECT * FROM barbearia WHERE Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -107,7 +107,7 @@ class BarbeariaController {
                 conn.query(
                     SQL,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -158,14 +158,14 @@ class BarbeariaController {
                 conn.query(
                     `SELECT * FROM barbearia WHERE Barb_CNPJ = "${cnpj}" AND Barb_InscEst = "${ie}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (JSON.stringify(result) != '[]') {
                             return res.status(401).json();
                         } else {
                             conn.query(
                                 SQL,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -223,14 +223,14 @@ class BarbeariaController {
                 conn.query(
                     `SELECT * FROM barbearia WHERE Barb_CNPJ = "${cnpj}" AND Barb_InscEst = "${ie}" AND Barb_Codigo <> ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (JSON.stringify(result) != '[]') {
                             return res.status(401).json();
                         } else {
                             conn.query(
                                 SQL,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -253,7 +253,7 @@ class BarbeariaController {
                 conn.query(
                     `SELECT * FROM barbearia WHERE Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) === '[]') {
                             return res.status(404).json();
@@ -261,7 +261,7 @@ class BarbeariaController {
                             conn.query(
                                 `DELETE FROM barbearia WHERE Barb_Codigo = "${id}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -285,7 +285,7 @@ class BarbeariaController {
                 conn.query(
                     `SELECT * FROM barbearia_contatos WHERE Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -306,7 +306,7 @@ class BarbeariaController {
                 conn.query(
                     `INSERT INTO barbearia_contatos VALUES(${id}, "${descricao}", "${contato}")`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -333,7 +333,7 @@ class BarbeariaController {
                 conn.query(
                     SQL,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -358,7 +358,7 @@ class BarbeariaController {
                      ON BP.Usr_Codigo = U.Usr_Codigo 
                      WHERE BP.Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -379,7 +379,7 @@ class BarbeariaController {
                 conn.query(
                     `INSERT INTO barbearia_proprietarios VALUES(${id}, ${proprietarioCod})`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -406,7 +406,7 @@ class BarbeariaController {
                 conn.query(
                     SQL,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )

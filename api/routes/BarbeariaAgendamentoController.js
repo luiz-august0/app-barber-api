@@ -27,7 +27,7 @@ class BarbeariaAgendamentoController {
 					 AND BH.Barb_Codigo = ${barbeariaID})
 					 GROUP BY Id;`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -40,7 +40,7 @@ class BarbeariaAgendamentoController {
 	}
 
 	async postAgendamento(req, res) {
-		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, horaFim, data } = req.body;
+		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, data } = req.body;
         let weekDay = DateToWeekday(data);
 
         try {
@@ -65,19 +65,19 @@ class BarbeariaAgendamentoController {
 					 GROUP BY Id) AS tmp
                      WHERE tmp.Horario = "${horaInicio}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) == "[]") {
-                            return res.status(404).json();
+                            return res.status(405).send();
+                        } else {
+                            conn.query(
+                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%h:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P")`,
+                                (error, result, fields) => {
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                    return res.status(201).json(result);
+                                }
+                            )
                         }
-                    }
-                )
-
-                conn.query(
-					`INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", "${horaFim}", "${data}", "P")`,
-                    (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
-                        return res.status(201).json(result);
                     }
                 )
                 conn.release();
@@ -97,7 +97,7 @@ class BarbeariaAgendamentoController {
                 conn.query(
 					`UPDATE agendamento SET Agdm_Status = "${status}" WHERE Agdm_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -117,7 +117,7 @@ class BarbeariaAgendamentoController {
                 conn.query(
 					`DELETE FROM agendamento WHERE Agdm_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )

@@ -9,7 +9,7 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT * FROM servico_categorias WHERE Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -29,7 +29,7 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT * FROM servico_categorias WHERE ServCat_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -49,13 +49,13 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT * FROM servico_categorias WHERE ServCat_Nome = "${nome}" AND Barb_Codigo = ${idBarbearia}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) == "[]") {
                             conn.query(
                                 `INSERT INTO servico_categorias SET Barb_Codigo = ${idBarbearia}, ServCat_Nome = "${nome}"`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -83,13 +83,13 @@ class BarbeariaServicosController {
                     AND ServCat_Codigo <> ${id} 
                     AND Barb_Codigo = ${idBarbearia}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         
                         if (JSON.stringify(result) == "[]") {
                             conn.query(
                                 `UPDATE servico_categorias SET ServCat_Nome = "${nome}" WHERE ServCat_Codigo = ${id}`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -114,13 +114,13 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT * FROM servico WHERE ServCat_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         
                         if (JSON.stringify(result) == "[]") {
                             conn.query(
                                 `DELETE FROM servico_categorias WHERE ServCat_Codigo = ${id}`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
                                 }
                             )
@@ -145,7 +145,7 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT *, FORMAT(TIME_TO_SEC(Serv_Duracao) / 60,0) AS Minutos FROM servico WHERE ServCat_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -165,7 +165,7 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT *, FORMAT(TIME_TO_SEC(Serv_Duracao) / 60,0) AS Minutos FROM servico WHERE Serv_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -186,7 +186,7 @@ class BarbeariaServicosController {
                     `INSERT INTO servico SET Serv_Nome = "${nome}", ServCat_Codigo = ${idCategoria}, 
                     Serv_Valor = ${valor}, Serv_Duracao = "${duracao}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -208,7 +208,7 @@ class BarbeariaServicosController {
                     `UPDATE servico SET Serv_Nome = "${nome}", Serv_Valor = ${valor}, Serv_Duracao = "${duracao}"
                     WHERE Serv_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -228,25 +228,25 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT Serv_Codigo FROM agendamento WHERE Serv_Codigo = ${id} AND Agdm_Data >= NOW()`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) == "[]") {
                             conn.query(
                                 `DELETE FROM agendamento WHERE Serv_Codigo = ${id} AND Agdm_Data < NOW()`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     conn.query(
                                         `DELETE FROM servico_imagens WHERE Serv_Codigo = ${id}`,
-                                        (error, result, fields) => {if (error) { return res.status(500).send({ error: error }) }}
+                                        (error, result, fields) => {if (error) { console.log(error); return res.status(500).send({ error: error }) }}
                                     )
                                     conn.query(
                                         `DELETE FROM barbeiro_servicos WHERE Serv_Codigo = ${id}`,
-                                        (error, result, fields) => {if (error) { return res.status(500).send({ error: error }) }}
+                                        (error, result, fields) => {if (error) { console.log(error); return res.status(500).send({ error: error }) }}
                                     )
                                     conn.query(
                                         `DELETE FROM servico WHERE Serv_Codigo = ${id}`,
                                         (error, result, fields) => {
-                                            if (error) { return res.status(500).send({ error: error }) } 
+                                            if (error) { console.log(error); return res.status(500).send({ error: error }) } 
                                             return res.status(201).json(result);
                                         }
                                     )
@@ -273,7 +273,7 @@ class BarbeariaServicosController {
                 conn.query(
                     `SELECT * FROM servico_imagens WHERE Serv_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -314,7 +314,7 @@ class BarbeariaServicosController {
                 conn.query(
                     SQL,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )

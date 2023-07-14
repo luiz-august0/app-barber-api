@@ -7,7 +7,7 @@ class BarbeariaHorariosController {
                 conn.query(
                     `SELECT Horario AS label, Horario AS text FROM horarios`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -28,7 +28,7 @@ class BarbeariaHorariosController {
                 conn.query(
                     `SELECT * FROM barbearia_horarios WHERE Barb_Codigo = ${id} AND BarbH_Dia = "${dia}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -49,7 +49,7 @@ class BarbeariaHorariosController {
                 conn.query(
                     `INSERT INTO barbearia_horarios VALUES(NULL, ${id}, "${dia}", "${hrInicial}", "${hrFinal}")`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -71,7 +71,7 @@ class BarbeariaHorariosController {
                     `UPDATE barbearia_horarios SET BarbH_HoraInicio = "${hrInicial}", BarbH_HoraFim = "${hrFinal}" 
                      WHERE BarbH_Seq = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -91,7 +91,7 @@ class BarbeariaHorariosController {
                 conn.query(
                     `DELETE FROM barbearia_horarios WHERE BarbH_Seq = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )

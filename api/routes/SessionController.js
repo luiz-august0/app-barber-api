@@ -12,7 +12,7 @@ class SessionController {
                 conn.query(
                     `SELECT * FROM usuario WHERE Usr_Email = "${email}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         
                         if (JSON.stringify(result) === '[]') {
                             return res.status(401).json({ error: "Usuário ou senha inválidos" });

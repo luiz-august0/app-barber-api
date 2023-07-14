@@ -9,7 +9,7 @@ class BarbeariaBarbeirosController {
                 conn.query(
 					`INSERT INTO barbearia_barbeiros SET Barb_Codigo = ${barbeariaID}, Usr_Codigo = ${usuarioID}, BarbB_Especialidade = "${especialidade}"`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -30,7 +30,7 @@ class BarbeariaBarbeirosController {
 					`UPDATE barbearia_barbeiros SET BarbB_Especialidade = "${especialidade}"
 					 WHERE Barb_Codigo = ${barbeariaID} AND Usr_Codigo = ${usuarioID}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -50,17 +50,17 @@ class BarbeariaBarbeirosController {
                 conn.query(
                     `SELECT Agdm_Barbeiro FROM agendamento WHERE Barb_Codigo = ${barbeariaID} AND Agdm_Barbeiro = ${usuarioID} AND Agdm_Data >= NOW()`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
                         if (JSON.stringify(result) == "[]") {
                             conn.query(
                                 `DELETE FROM agendamento WHERE Barb_Codigo = ${barbeariaID} AND Agdm_Barbeiro = ${usuarioID} AND Agdm_Data < NOW()`,
                                 (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     conn.query(
                                         `DELETE FROM barbearia_barbeiros WHERE Barb_Codigo = ${barbeariaID} AND Usr_Codigo = ${usuarioID}`,
                                         (error, result, fields) => {
-                                            if (error) { return res.status(500).send({ error: error }) }
+                                            if (error) { console.log(error); return res.status(500).send({ error: error }) }
 											return res.status(201).json(result);
                                         }
                                     )
@@ -88,7 +88,7 @@ class BarbeariaBarbeirosController {
 					`SELECT * FROM barbearia_barbeiros BB INNER JOIN usuario U ON BB.Usr_Codigo = U.Usr_Codigo
 					 WHERE BB.Barb_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -115,7 +115,7 @@ class BarbeariaBarbeirosController {
 					 WHERE BB.Barb_Codigo = ${id} AND BS.Serv_Codigo = ${servicoID}
                      GROUP BY U.Usr_Codigo`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -136,7 +136,7 @@ class BarbeariaBarbeirosController {
 					`SELECT * FROM barbearia_barbeiros BB INNER JOIN barbearia B ON BB.Barb_Codigo = B.Barb_Codigo
 					 WHERE BB.Usr_Codigo = ${id}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -162,7 +162,7 @@ class BarbeariaBarbeirosController {
                      WHERE BB.Barb_Codigo = ${barbeariaID} AND U.Usr_Codigo = ${usuarioID}
                      GROUP BY U.Usr_Codigo`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -182,7 +182,7 @@ class BarbeariaBarbeirosController {
                 conn.query(
 					`INSERT INTO barbeiro_servicos VALUES(${usuarioID}, ${barbeariaID}, ${servicoID})`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -202,7 +202,7 @@ class BarbeariaBarbeirosController {
                 conn.query(
 					`DELETE FROM barbeiro_servicos WHERE Usr_Codigo = ${usuarioID} AND Barb_Codigo = ${barbeariaID}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
@@ -229,7 +229,7 @@ class BarbeariaBarbeirosController {
                      AND BSV.Barb_Codigo = ${barbeariaID}
                      WHERE SV.ServCat_Codigo = ${categoriaID}`,
                     (error, result, fields) => {
-                        if (error) { return res.status(500).send({ error: error }) }
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
                     }
                 )
