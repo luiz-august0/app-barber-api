@@ -128,6 +128,51 @@ class BarbeariaAgendamentoController {
             return res.status(500).json({ error: "Internal server error." })
         }	
 	}
+
+    async getAgendamentos (req, res) {
+        try {
+            const { barbeariaID, barbeiroID, usuarioID, servicoID, dataInicio, dataFim, status } = req.body;
+
+            let SQL = `SELECT A.*, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM agendamento A 
+                       INNER JOIN servico S ON S.Serv_Codigo = A.Serv_Codigo WHERE 1 > 0 `;
+
+            if ((barbeariaID !== null) && (barbeariaID !== '') && (barbeariaID !== undefined)) {
+                SQL = SQL + `AND A.Barb_Codigo = ${barbeariaID} `;
+            }
+            if ((barbeiroID !== null) && (barbeiroID !== '') && (barbeiroID !== undefined)) {
+                SQL = SQL + `AND A.Agdm_Barbeiro = ${barbeiroID} `;
+            }
+            if ((usuarioID !== null) && (usuarioID !== '') && (usuarioID !== undefined)) {
+                SQL = SQL + `AND A.Usr_Codigo = ${usuarioID} `;
+            }
+            if ((servicoID !== null) && (servicoID !== '') && (servicoID !== undefined)) {
+                SQL = SQL + `AND A.Serv_Codigo = ${servicoID} `;
+            }
+            if ((dataInicio !== null) && (dataInicio !== '') && (dataInicio !== undefined)) {
+                SQL = SQL + `AND A.Agdm_Data >= "${dataInicio}" `;
+            }
+            if ((dataFim !== null) && (dataFim !== '') && (dataFim !== undefined)) {
+                SQL = SQL + `AND A.Agdm_Data <= "${dataFim}" `;
+            }
+            if ((status !== null) && (status !== '') && (status !== undefined)) {
+                SQL = SQL + `AND A.Agdm_Status = "${status}" `;
+            }
+
+            mysql.getConnection((error, conn) => {
+                conn.query(
+                    SQL,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        return res.status(201).json(result);
+                    }
+                )
+                conn.release();
+            });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." });
+        }
+    }
 }
 
 export default new BarbeariaAgendamentoController();

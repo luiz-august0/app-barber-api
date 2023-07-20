@@ -57,15 +57,24 @@ class BarbeariaBarbeirosController {
                                 `DELETE FROM agendamento WHERE Barb_Codigo = ${barbeariaID} AND Agdm_Barbeiro = ${usuarioID} AND Agdm_Data < NOW()`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
-                                    conn.query(
-                                        `DELETE FROM barbearia_barbeiros WHERE Barb_Codigo = ${barbeariaID} AND Usr_Codigo = ${usuarioID}`,
-                                        (error, result, fields) => {
-                                            if (error) { console.log(error); return res.status(500).send({ error: error }) }
-											return res.status(201).json(result);
-                                        }
-                                    )
                                 }
                             )
+
+                            conn.query(
+                                `DELETE FROM barbeiro_servicos WHERE Barb_Codigo = ${barbeariaID} AND Usr_Codigo = ${usuarioID}`,
+                                (error, result, fields) => {
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                }
+                            )
+
+                            conn.query(
+                                `DELETE FROM barbearia_barbeiros WHERE Barb_Codigo = ${barbeariaID} AND Usr_Codigo = ${usuarioID}`,
+                                (error, result, fields) => {
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                }
+                            )
+
+                            return res.status(201).json(result);
                         } else {
                             return res.status(401).json();
                         }
@@ -158,7 +167,7 @@ class BarbeariaBarbeirosController {
                      FROM barbearia_barbeiros BB 
                      INNER JOIN usuario U ON BB.Usr_Codigo = U.Usr_Codigo
                      LEFT JOIN barbeiro_avaliacoes BAV ON BAV.Usr_Codigo = U.Usr_Codigo
-                     INNER JOIN barbeiro_servicos BS ON BS.Barb_Codigo = BB.Barb_Codigo AND BS.Usr_Codigo = U.Usr_Codigo 
+                     LEFT JOIN barbeiro_servicos BS ON BS.Barb_Codigo = BB.Barb_Codigo AND BS.Usr_Codigo = U.Usr_Codigo 
                      WHERE BB.Barb_Codigo = ${barbeariaID} AND U.Usr_Codigo = ${usuarioID}
                      GROUP BY U.Usr_Codigo`,
                     (error, result, fields) => {

@@ -120,6 +120,7 @@ routes.post('/barbeiro/servico/remove', BarbeariaBarbeirosController.deleteServi
 //Rotas agendamento
 routes.post('/barbeiro/agendamento/horarios', BarbeariaAgendamentoController.getHorariosDisponiveisBarbeiro);
 routes.post('/barbearia/agendamento', BarbeariaAgendamentoController.postAgendamento);
+routes.post('/barbearia/agendamento/get', BarbeariaAgendamentoController.getAgendamentos);
 routes.put('/barbearia/agendamento/:id', BarbeariaAgendamentoController.updateStatusAgendamento);
 routes.delete('/barbearia/agendamento/:id', BarbeariaAgendamentoController.deleteAgendamento);
 
