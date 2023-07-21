@@ -28,7 +28,9 @@ class UsuarioController {
 
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT * from usuario WHERE Usr_Codigo = ${id}`,
+                    `SELECT U.*, BB.Barb_Codigo FROM usuario U 
+                     LEFT JOIN barbearia_barbeiros BB ON U.Usr_Codigo = BB.Usr_Codigo
+                     WHERE U.Usr_Codigo = ${id} `,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         if (!result) {

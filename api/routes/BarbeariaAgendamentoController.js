@@ -133,7 +133,8 @@ class BarbeariaAgendamentoController {
         try {
             const { barbeariaID, barbeiroID, usuarioID, servicoID, dataInicio, dataFim, status } = req.body;
 
-            let SQL = `SELECT A.*, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM agendamento A 
+            let SQL = `SELECT A.*, B.Barb_LogoUrl, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM agendamento A
+                       INNER JOIN barbearia B ON A.Barb_Codigo = B.Barb_Codigo 
                        INNER JOIN servico S ON S.Serv_Codigo = A.Serv_Codigo WHERE 1 > 0 `;
 
             if ((barbeariaID !== null) && (barbeariaID !== '') && (barbeariaID !== undefined)) {
@@ -157,6 +158,8 @@ class BarbeariaAgendamentoController {
             if ((status !== null) && (status !== '') && (status !== undefined)) {
                 SQL = SQL + `AND A.Agdm_Status = "${status}" `;
             }
+
+            SQL = SQL + " ORDER BY A.Agdm_Data DESC, A.Agdm_HoraInicio DESC ";
 
             mysql.getConnection((error, conn) => {
                 conn.query(
