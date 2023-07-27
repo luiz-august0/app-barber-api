@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname+'/./../../.env'}););
+require('dotenv').config();
 
 export default {
 	host: process.env.REDIS_HOST,

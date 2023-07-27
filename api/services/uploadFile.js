@@ -1,5 +1,5 @@
 var cloudinary = require("cloudinary").v2;
-require('dotenv').config({path: __dirname+'/./../../.env'}););
+require('dotenv').config();
 
 cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,

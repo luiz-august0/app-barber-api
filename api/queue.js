@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname+'/./../../.env'}););
+require('dotenv').config();
 import Queue from './lib/Queue';
 
 Queue.process();

@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname+'/./../../.env'}););
+require('dotenv').config();
 
 export default {
     secret: process.env.SYS_SECRET,

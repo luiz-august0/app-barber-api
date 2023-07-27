@@ -1,5 +1,5 @@
 import * as mysql from 'mysql2';
-require('dotenv').config({path: __dirname+'/./../../.env'});
+require('dotenv').config();
 
 var pool = mysql.createPool({
     "user" : process.env.USER,
