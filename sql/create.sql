@@ -91,11 +91,13 @@ CREATE TABLE barbearia_barbeiros(
 
 CREATE TABLE barbeiro_avaliacoes(
     Usr_Codigo INT NOT NULL,
+    UsrBarb_Codigo INT NOT NULL,
     Aval_Comentario TEXT,
     Aval_Rate INT NOT NULL
 );
 
 CREATE TABLE barbearia_avaliacoes(
+    Usr_Codigo INT NOT NULL,
     Barb_Codigo INT NOT NULL,
     Aval_Comentario TEXT,
     Aval_Rate INT NOT NULL
@@ -155,8 +157,14 @@ FOREIGN KEY(Usr_Codigo) REFERENCES usuario(Usr_Codigo);
 ALTER TABLE barbeiro_avaliacoes ADD CONSTRAINT fk_barbeiro_avaliacoes_usuario
 FOREIGN KEY(Usr_Codigo) REFERENCES usuario(Usr_Codigo);
 
+ALTER TABLE barbeiro_avaliacoes ADD CONSTRAINT fk_barbeiro_avaliacoes_barbeiro
+FOREIGN KEY(UsrBarb_Codigo) REFERENCES usuario(Usr_Codigo);
+
 ALTER TABLE barbearia_avaliacoes ADD CONSTRAINT fk_barbearia_avaliacoes_barbearia
 FOREIGN KEY(Barb_Codigo) REFERENCES barbearia(Barb_Codigo);
+
+ALTER TABLE barbearia_avaliacoes ADD CONSTRAINT fk_barbearia_avaliacoes_usuario
+FOREIGN KEY(Usr_Codigo) REFERENCES usuario(Usr_Codigo);
 
 ALTER TABLE barbeiro_servicos ADD CONSTRAINT fk_barbeiro_servicos_usuario
 FOREIGN KEY(Usr_Codigo) REFERENCES usuario(Usr_Codigo);

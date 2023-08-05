@@ -133,9 +133,11 @@ class BarbeariaAgendamentoController {
         try {
             const { barbeariaID, barbeiroID, usuarioID, servicoID, dataInicio, dataFim, status } = req.body;
 
-            let SQL = `SELECT A.*, B.Barb_LogoUrl, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM agendamento A
+            let SQL = `SELECT A.*, U.Usr_FotoPerfil, B.Barb_LogoUrl, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM agendamento A
                        INNER JOIN barbearia B ON A.Barb_Codigo = B.Barb_Codigo 
-                       INNER JOIN servico S ON S.Serv_Codigo = A.Serv_Codigo WHERE 1 > 0 `;
+                       INNER JOIN servico S ON S.Serv_Codigo = A.Serv_Codigo 
+                       INNER JOIN usuario U ON A.Usr_Codigo = U.Usr_Codigo
+                       WHERE 1 > 0 `;
 
             if ((barbeariaID !== null) && (barbeariaID !== '') && (barbeariaID !== undefined)) {
                 SQL = SQL + `AND A.Barb_Codigo = ${barbeariaID} `;
@@ -176,6 +178,30 @@ class BarbeariaAgendamentoController {
             return res.status(500).json({ error: "Internal server error." });
         }
     }
+
+    async postAvaliacao(req, res) {
+		const { usuarioID, barbeariaID, barbeiroID, mensagem, rate } = req.body;
+
+        try {
+            mysql.getConnection((error, conn) => {
+                conn.query(
+					`INSERT INTO barbearia_avaliacoes VALUES(${usuarioID}, ${barbeariaID}, "${mensagem}", ${rate})`,
+                    (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
+                )
+
+                conn.query(
+					`INSERT INTO barbeiro_avaliacoes VALUES(${usuarioID}, ${barbeiroID}, "${mensagem}", ${rate})`,
+                    (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
+                )
+                
+                conn.release();
+                return res.status(201).json();
+            })
+        } catch(err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." })
+        }	
+	}
 }
 
 export default new BarbeariaAgendamentoController();
