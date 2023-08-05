@@ -109,6 +109,27 @@ class BarbeariaBarbeirosController {
         }
     }
 
+	async getBarbeirosByUsuario(req, res) {
+        const { id } = req.params;
+
+        try {
+            mysql.getConnection((error, conn) => {
+                conn.query(
+					`SELECT BB.Barb_Codigo, BB.Usr_Codigo FROM barbearia_barbeiros BB INNER JOIN usuario U ON BB.Usr_Codigo = U.Usr_Codigo
+					 WHERE BB.Usr_Codigo = ${id}`,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        return res.status(201).json(result);
+                    }
+                )
+                conn.release();
+            })
+        } catch(err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." })
+        }
+    }
+
 	async getBarbeirosByServico(req, res) {
         const { id } = req.params;
         const { servicoID } = req.body;
@@ -119,7 +140,7 @@ class BarbeariaBarbeirosController {
 					`SELECT BB.Barb_Codigo, U.Usr_Codigo, U.Usr_Nome, BB.BarbB_Especialidade, U.Usr_Contato, U.Usr_FotoPerfil, AVG(BAV.Aval_Rate) AS Aval_Rate
                      FROM barbearia_barbeiros BB 
                      INNER JOIN usuario U ON BB.Usr_Codigo = U.Usr_Codigo
-                     LEFT JOIN barbeiro_avaliacoes BAV ON BAV.Usr_Codigo = U.Usr_Codigo
+                     LEFT JOIN barbeiro_avaliacoes BAV ON BAV.UsrBarb_Codigo = U.Usr_Codigo
                      INNER JOIN barbeiro_servicos BS ON BS.Barb_Codigo = BB.Barb_Codigo AND BS.Usr_Codigo = U.Usr_Codigo 
 					 WHERE BB.Barb_Codigo = ${id} AND BS.Serv_Codigo = ${servicoID}
                      GROUP BY U.Usr_Codigo`,
@@ -166,7 +187,7 @@ class BarbeariaBarbeirosController {
 					`SELECT U.Usr_Codigo, U.Usr_Email, U.Usr_Nome, U.Usr_Contato, U.Usr_CPF, U.Usr_Tipo, U.Usr_FotoPerfil, BB.BarbB_Especialidade, AVG(BAV.Aval_Rate) AS Aval_Rate 
                      FROM barbearia_barbeiros BB 
                      INNER JOIN usuario U ON BB.Usr_Codigo = U.Usr_Codigo
-                     LEFT JOIN barbeiro_avaliacoes BAV ON BAV.Usr_Codigo = U.Usr_Codigo
+                     LEFT JOIN barbeiro_avaliacoes BAV ON BAV.UsrBarb_Codigo = U.Usr_Codigo
                      LEFT JOIN barbeiro_servicos BS ON BS.Barb_Codigo = BB.Barb_Codigo AND BS.Usr_Codigo = U.Usr_Codigo 
                      WHERE BB.Barb_Codigo = ${barbeariaID} AND U.Usr_Codigo = ${usuarioID}
                      GROUP BY U.Usr_Codigo`,
