@@ -47,13 +47,14 @@ class BarbeariaController {
 
     async getBarbearias (req, res) {
         try {
-            const { nome, cidade, endRua, endNumero, endBairro } = req.body;
+            const { nome, cidade, endRua, endNumero, endBairro, usuarioID } = req.body;
 
             let SQL = `SELECT B.*, AVG(BA.Aval_Rate) AS Aval_Rate FROM barbearia B 
                        LEFT JOIN barbearia_avaliacoes BA
                        ON B.Barb_Codigo = BA.Barb_Codigo
                        LEFT JOIN agendamento AG
                        ON B.Barb_Codigo = AG.Barb_Codigo
+                       AND AG.Usr_Codigo = ${usuarioID}
                        WHERE 1 > 0 
                        AND AG.Barb_Codigo IS NULL `;
 
