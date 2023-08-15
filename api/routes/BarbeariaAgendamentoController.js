@@ -43,6 +43,10 @@ class BarbeariaAgendamentoController {
 		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, data } = req.body;
         let weekDay = DateToWeekday(data);
 
+        if (new Date(data+"T"+horaInicio).toLocaleString() <= new Date().toLocaleString()) {
+            return res.status(401).send();
+        }
+
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
@@ -185,12 +189,12 @@ class BarbeariaAgendamentoController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-					`INSERT INTO barbearia_avaliacoes VALUES(${usuarioID}, ${barbeariaID}, "${mensagem}", ${rate})`,
+					`INSERT INTO barbearia_avaliacoes VALUES(${usuarioID}, ${barbeariaID}, "${mensagem}", ${rate}, NOW())`,
                     (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
                 )
 
                 conn.query(
-					`INSERT INTO barbeiro_avaliacoes VALUES(${usuarioID}, ${barbeiroID}, "${mensagem}", ${rate})`,
+					`INSERT INTO barbeiro_avaliacoes VALUES(${usuarioID}, ${barbeiroID}, "${mensagem}", ${rate}, NOW())`,
                     (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
                 )
                 
