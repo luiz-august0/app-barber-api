@@ -2,30 +2,50 @@ import { DateToWeekday } from '../formatters';
 
 const mysql = require('../config/mysql').pool;
 
+//Funções gerais
+const addZero = (value) => {
+    if (value <= 9) {
+        return "0" + value;
+    } else {
+        return value;
+    }
+}
+
 class BarbeariaAgendamentoController {
 	async getHorariosDisponiveisBarbeiro(req, res) {
-		const { barbeariaID, barbeiroID, data, tempServ } = req.body;
+		const { barbeariaID, barbeiroID, data, tempServ, horario } = req.body;
 		let weekDay = DateToWeekday(data);
+        let horario_hora = new Date(horario).getHours() + 1;
+        let horario_minutos = new Date(horario).getMinutes();
+        let horario_formatado = addZero(horario_hora) + ":" + addZero(horario_minutos) + ":00";
+        let data_formatada = data + "T00:00:00.000";
+
+        let sql = ` SELECT Horario FROM horarios
+                    WHERE Horario NOT IN (
+                    SELECT H.Horario FROM horarios H, agendamento A
+                    WHERE H.Horario >= DATE_SUB(A.Agdm_HoraInicio, INTERVAL ${tempServ} - 15 MINUTE)
+                    AND H.Horario < A.Agdm_HoraFim
+                    AND A.Barb_Codigo = ${barbeariaID}
+                    AND A.Agdm_Barbeiro = ${barbeiroID}
+                    AND A.Agdm_Data = "${data}"
+                    AND A.Agdm_Status NOT IN ('C', 'R'))
+                    AND Horario IN (
+                    SELECT H.Horario FROM horarios H, barbearia_horarios BH
+                    WHERE H.Horario >= BH.BarbH_HoraInicio
+                    AND H.Horario < DATE_SUB(BH.BarbH_HoraFim, INTERVAL ${tempServ} - 15 MINUTE)
+                    AND BH.BarbH_Dia = "${weekDay}"
+                    AND BH.Barb_Codigo = ${barbeariaID})`;
+    
+        if (new Date(data_formatada).getDate() == new Date().getDate()) {
+            sql = sql + ` AND Horario >= "${horario_formatado}"`;
+        }
+        
+        sql = sql + " GROUP BY Id;";
 
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-					`SELECT Horario FROM horarios
-					 WHERE Horario NOT IN (
-					 SELECT H.Horario FROM horarios H, agendamento A
-					 WHERE H.Horario >= DATE_SUB(A.Agdm_HoraInicio, INTERVAL ${tempServ} - 15 MINUTE)
-					 AND H.Horario < A.Agdm_HoraFim
-					 AND A.Barb_Codigo = ${barbeariaID}
-					 AND A.Agdm_Barbeiro = ${barbeiroID}
-					 AND A.Agdm_Data = "${data}"
-					 AND A.Agdm_Status NOT IN ('C', 'R'))
-					 AND Horario IN (
-					 SELECT H.Horario FROM horarios H, barbearia_horarios BH
-					 WHERE H.Horario >= BH.BarbH_HoraInicio
-					 AND H.Horario < DATE_SUB(BH.BarbH_HoraFim, INTERVAL ${tempServ} - 15 MINUTE)
-					 AND BH.BarbH_Dia = "${weekDay}"
-					 AND BH.Barb_Codigo = ${barbeariaID})
-					 GROUP BY Id;`,
+                    sql,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
@@ -42,8 +62,10 @@ class BarbeariaAgendamentoController {
 	async postAgendamento(req, res) {
 		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, data } = req.body;
         let weekDay = DateToWeekday(data);
+        let dateNow = new Date();
+        dateNow.setHours(dateNow.getHours() + 1);
 
-        if (new Date(data+"T"+horaInicio).toLocaleString() <= new Date().toLocaleString()) {
+        if (new Date(data+"T"+horaInicio).toLocaleString() <= dateNow.toLocaleString()) {
             return res.status(401).send();
         }
 
@@ -75,7 +97,7 @@ class BarbeariaAgendamentoController {
                             return res.status(405).send();
                         } else {
                             conn.query(
-                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%h:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P")`,
+                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P")`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
