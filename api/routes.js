@@ -125,5 +125,6 @@ routes.post('/barbearia/agendamento/get', BarbeariaAgendamentoController.getAgen
 routes.put('/barbearia/agendamento/:id', BarbeariaAgendamentoController.updateStatusAgendamento);
 routes.delete('/barbearia/agendamento/:id', BarbeariaAgendamentoController.deleteAgendamento);
 routes.post('/barbearia/agendamento/avaliacao', BarbeariaAgendamentoController.postAvaliacao);
+routes.get('/barbearia/agendamento/avaliacao/:id', BarbeariaAgendamentoController.getAvaliacoes);
 
 export default routes;

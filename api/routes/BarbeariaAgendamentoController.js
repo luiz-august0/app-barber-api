@@ -228,6 +228,39 @@ class BarbeariaAgendamentoController {
             return res.status(500).json({ error: "Internal server error." })
         }	
 	}
+
+    async getAvaliacoes(req, res) {
+		const { id } = req.params;
+
+        try {
+            mysql.getConnection((error, conn) => {
+                conn.query(
+                    `SELECT (SELECT COUNT(*) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id} AND Aval_Rate = 1) AS Aval_Rate1,
+                    (SELECT COUNT(*) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id} AND Aval_Rate = 2) AS Aval_Rate2,
+                    (SELECT COUNT(*) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id} AND Aval_Rate = 3) AS Aval_Rate3,
+                    (SELECT COUNT(*) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id} AND Aval_Rate = 4) AS Aval_Rate4,
+                    (SELECT COUNT(*) from barbearia_avaliacoes WHERE Barb_Codigo = ${id} and Aval_Rate = 5) as Aval_Rate5`,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        let resAvaliacoes = result;
+
+                        conn.query(
+                            `SELECT (SELECT AVG(Aval_Rate) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id}) AS Aval_RateAvg, BA.* 
+                             FROM barbearia_avaliacoes BA WHERE BA.Barb_Codigo = ${id} ORDER BY BA.Aval_Date DESC LIMIT 50`,
+                            (error, result, fields) => {
+                                if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                return res.status(201).json([resAvaliacoes, result]); 
+                            }
+                        )
+                    }
+                )
+                conn.release();
+            });
+        } catch(err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." })
+        }	
+	}
 }
 
 export default new BarbeariaAgendamentoController();
