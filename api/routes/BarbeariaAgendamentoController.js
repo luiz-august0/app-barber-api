@@ -1,4 +1,6 @@
 import { DateToWeekday } from '../formatters';
+import moment from "moment";
+import 'moment/locale/pt-br';
 
 const mysql = require('../config/mysql').pool;
 
@@ -211,12 +213,12 @@ class BarbeariaAgendamentoController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-					`INSERT INTO barbearia_avaliacoes VALUES(${usuarioID}, ${barbeariaID}, "${mensagem}", ${rate}, NOW())`,
+					`INSERT INTO barbearia_avaliacoes VALUES(${usuarioID}, ${barbeariaID}, "${mensagem}", ${rate}, "${moment().format('YYYY-MM-DD HH:mm:ss')}")`,
                     (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
                 )
 
                 conn.query(
-					`INSERT INTO barbeiro_avaliacoes VALUES(${usuarioID}, ${barbeiroID}, "${mensagem}", ${rate}, NOW())`,
+					`INSERT INTO barbeiro_avaliacoes VALUES(${usuarioID}, ${barbeiroID}, "${mensagem}", ${rate}, "${moment().format('YYYY-MM-DD HH:mm:ss')}")`,
                     (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } }
                 )
                 
@@ -245,8 +247,10 @@ class BarbeariaAgendamentoController {
                         let resAvaliacoes = result;
 
                         conn.query(
-                            `SELECT (SELECT AVG(Aval_Rate) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id}) AS Aval_RateAvg, BA.* 
-                             FROM barbearia_avaliacoes BA WHERE BA.Barb_Codigo = ${id} ORDER BY BA.Aval_Date DESC LIMIT 50`,
+                            `SELECT (SELECT AVG(Aval_Rate) FROM barbearia_avaliacoes WHERE Barb_Codigo = ${id}) AS Aval_RateAvg, BA.*,
+                             U.Usr_Nome, U.Usr_FotoPerfil FROM barbearia_avaliacoes BA 
+                             INNER JOIN usuario U ON BA.Usr_Codigo = U.Usr_Codigo
+                             WHERE BA.Barb_Codigo = ${id} ORDER BY BA.Aval_Date DESC LIMIT 50`,
                             (error, result, fields) => {
                                 if (error) { console.log(error); return res.status(500).send({ error: error }) }
                                 return res.status(201).json([resAvaliacoes, result]); 

@@ -94,7 +94,7 @@ CREATE TABLE barbeiro_avaliacoes(
     UsrBarb_Codigo INT NOT NULL,
     Aval_Comentario TEXT,
     Aval_Rate INT NOT NULL,
-    Aval_Date DATE NOT NULL
+    Aval_Date DATETIME NOT NULL
 );
 
 CREATE TABLE barbearia_avaliacoes(
@@ -102,7 +102,7 @@ CREATE TABLE barbearia_avaliacoes(
     Barb_Codigo INT NOT NULL,
     Aval_Comentario TEXT,
     Aval_Rate INT NOT NULL,
-    Aval_Date DATE NOT NULL
+    Aval_Date DATETIME NOT NULL
 );
 
 CREATE TABLE barbeiro_servicos(
