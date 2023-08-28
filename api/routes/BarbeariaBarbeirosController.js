@@ -48,7 +48,7 @@ class BarbeariaBarbeirosController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT Agdm_Barbeiro FROM agendamento WHERE Barb_Codigo = ${barbeariaID} AND Agdm_Barbeiro = ${usuarioID} AND Agdm_Data >= NOW()`,
+                    `SELECT Agdm_Barbeiro FROM agendamento WHERE Barb_Codigo = ${barbeariaID} AND Agdm_Barbeiro = ${usuarioID} AND Agdm_Data >= NOW() AND Agdm_Status NOT IN ('C', 'R', 'RL')`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
 

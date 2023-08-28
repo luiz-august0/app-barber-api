@@ -226,7 +226,7 @@ class BarbeariaServicosController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT Serv_Codigo FROM agendamento WHERE Serv_Codigo = ${id} AND Agdm_Data >= NOW()`,
+                    `SELECT Serv_Codigo FROM agendamento WHERE Serv_Codigo = ${id} AND Agdm_Data >= NOW() AND Agdm_Status NOT IN ('C', 'R', 'RL')`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
 

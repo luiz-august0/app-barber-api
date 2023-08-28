@@ -30,7 +30,7 @@ class BarbeariaAgendamentoController {
                     AND A.Barb_Codigo = ${barbeariaID}
                     AND A.Agdm_Barbeiro = ${barbeiroID}
                     AND A.Agdm_Data = "${data}"
-                    AND A.Agdm_Status NOT IN ('C', 'R'))
+                    AND A.Agdm_Status NOT IN ('C', 'R', 'RL'))
                     AND Horario IN (
                     SELECT H.Horario FROM horarios H, barbearia_horarios BH
                     WHERE H.Horario >= BH.BarbH_HoraInicio
@@ -83,7 +83,7 @@ class BarbeariaAgendamentoController {
 					 AND A.Barb_Codigo = ${barbeariaID}
 					 AND A.Agdm_Barbeiro = ${barbeiroID}
 					 AND A.Agdm_Data = "${data}"
-					 AND A.Agdm_Status NOT IN ('C', 'R'))
+					 AND A.Agdm_Status NOT IN ('C', 'R', 'RL'))
 					 AND Horario IN (
 					 SELECT H.Horario FROM horarios H, barbearia_horarios BH
 					 WHERE H.Horario >= BH.BarbH_HoraInicio
