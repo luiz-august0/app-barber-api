@@ -1,3 +1,5 @@
+import agendamentoClienteHTML from '../htmlEmails/agendamentoClienteHTML';
+
 require('dotenv').config();
 const nodemailer = require("nodemailer");
 
@@ -8,11 +10,15 @@ export default async function sendEmail(data) {
     const recuperacaoSub = "Recuperação de Senha";
     const recuperacaoHtml = '<p>Olá,</p><p>Você solicitou a recuperação de senha, por gentileza, acesse o link a baixo para realizar a troca de sua senha.<br></p><p>' + 
                             '<u>' + data.link + '</u></p>Caso você não tenha feito essa solicitação, sugerimos que verifique suas informações de segurança o quanto antes.</p>';
-    
+
     switch (data.tipo) {
         case 'RECUPERACAO':
             subjectEmail = recuperacaoSub;
             htmlEmail = recuperacaoHtml;
+            break;
+        case 'AGENDAMENTOCLIENTE':
+            subjectEmail = "Agendamento de Horário";
+            htmlEmail = agendamentoClienteHTML(data.dataEmail[0]);
             break;
     }
 

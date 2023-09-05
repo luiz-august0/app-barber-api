@@ -1,6 +1,7 @@
-import { DateToWeekday } from '../formatters';
 import moment from "moment";
 import 'moment/locale/pt-br';
+import formatters from "../formatters";
+import Queue from "../lib/Queue";
 
 const mysql = require('../config/mysql').pool;
 
@@ -16,7 +17,7 @@ const addZero = (value) => {
 class BarbeariaAgendamentoController {
 	async getHorariosDisponiveisBarbeiro(req, res) {
 		const { barbeariaID, barbeiroID, data, tempServ, horario } = req.body;
-		let weekDay = DateToWeekday(data);
+		let weekDay = formatters.DateToWeekday(data);
         let horario_hora = new Date(horario).getHours() + 1;
         let horario_minutos = new Date(horario).getMinutes();
         let horario_formatado = addZero(horario_hora) + ":" + addZero(horario_minutos) + ":00";
@@ -63,7 +64,7 @@ class BarbeariaAgendamentoController {
 
 	async postAgendamento(req, res) {
 		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, data } = req.body;
-        let weekDay = DateToWeekday(data);
+        let weekDay = formatters.DateToWeekday(data);
         let dateNow = new Date();
         dateNow.setHours(dateNow.getHours() + 1);
 
@@ -102,6 +103,14 @@ class BarbeariaAgendamentoController {
                                 `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P")`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
+
+                                    const data = { id: result.insertId };
+
+                                    const sendEmails = async() => {
+                                        await Queue.add('SenderEmailAgendamento', data);
+                                    }
+
+                                    sendEmails();
                                     return res.status(201).json(result);
                                 }
                             )

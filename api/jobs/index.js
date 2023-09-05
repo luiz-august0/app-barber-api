@@ -1,2 +1,2 @@
-export { default as SenderMail } from './SenderMail';
-export { default as Teste } from './Teste';
+export { default as SenderRecuperationMail } from './SenderRecuperationMail';
+export { default as SenderEmailAgendamento } from './SenderEmailAgendamento';

@@ -323,7 +323,7 @@ class UsuarioController {
                             };
 
                             const send = async() => {
-                                await Queue.add('SenderMail', data);
+                                await Queue.add('SenderRecuperationMail', data);
                             }
                             send();
 
