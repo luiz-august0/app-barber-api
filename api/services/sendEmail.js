@@ -1,4 +1,6 @@
+import agendamentoBarbeiroHTML from '../htmlEmails/agendamentoBarbeiroHTML';
 import agendamentoClienteHTML from '../htmlEmails/agendamentoClienteHTML';
+import agendamentoProprietarioBarbeariaHTML from '../htmlEmails/agendamentoProprietarioBarbeariaHTML';
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
@@ -18,7 +20,15 @@ export default async function sendEmail(data) {
             break;
         case 'AGENDAMENTOCLIENTE':
             subjectEmail = "Agendamento de Horário";
-            htmlEmail = agendamentoClienteHTML(data.dataEmail[0]);
+            htmlEmail = agendamentoClienteHTML(data.dataEmail);
+            break;
+        case 'AGENDAMENTOBARBEIRO':
+            subjectEmail = "Agendamento de Horário";
+            htmlEmail = agendamentoBarbeiroHTML(data.dataEmail);
+            break;
+        case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
+            subjectEmail = "Agendamento de Horário";
+            htmlEmail = agendamentoProprietarioBarbeariaHTML(data.dataEmail, nome);
             break;
     }
 

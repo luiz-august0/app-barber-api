@@ -20,26 +20,41 @@ export default {
 					WHERE AG.Agdm_Codigo = ${data.id}`,
 					(error, result, fields) => {
 						if (error) { console.log(error) }
+						const dataEmail = result[0];
 
-						const data = {
+						const dataCliente = {
 							email: result[0].EmailCliente,
-							dataEmail: result,
+							dataEmail,
 							tipo: 'AGENDAMENTOCLIENTE'
 						};
 
-						sendEmail(data);
+						const dataBarbeiro = {
+							email: result[0].EmailBarbeiro,
+							dataEmail,
+							tipo: 'AGENDAMENTOBARBEIRO'
+						};
 
-						/*conn.query(
-							`SELECT U.Usr_Email FROM barbearia_proprietarios BP
+						sendEmail(dataCliente);
+						sendEmail(dataBarbeiro);
+
+						conn.query(
+							`SELECT U.Usr_Email, U.Usr_Nome FROM barbearia_proprietarios BP
 							INNER JOIN usuario U ON BP.Usr_Codigo = U.Usr_Codigo
 							WHERE BP.Barb_Codigo = ${dataEmail.Barb_Codigo}
 							AND BP.Usr_Codigo <> ${dataEmail.Agdm_Barbeiro}`,
 							(error, result, fields) => {
 								if (error) { console.log(error) }
 								result.map((e) => {
-									//
+									const data = {
+										email: e.Usr_Email,
+										nome: e.Usr_Nome,
+										dataEmail,
+										tipo: 'AGENDAMENTOPROPRIETARIOBARBEARIA'
+									};
+			
+									sendEmail(data);
 								})
-						})*/
+						})
 					}
 				)
 				conn.release();
