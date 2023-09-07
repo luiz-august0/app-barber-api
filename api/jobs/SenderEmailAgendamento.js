@@ -25,12 +25,14 @@ export default {
 						const dataCliente = {
 							email: result[0].EmailCliente,
 							dataEmail,
+							status: data.status,
 							tipo: 'AGENDAMENTOCLIENTE'
 						};
 
 						const dataBarbeiro = {
 							email: result[0].EmailBarbeiro,
 							dataEmail,
+							status: data.status,
 							tipo: 'AGENDAMENTOBARBEIRO'
 						};
 
@@ -45,14 +47,15 @@ export default {
 							(error, result, fields) => {
 								if (error) { console.log(error) }
 								result.map((e) => {
-									const data = {
+									const dataProprietario = {
 										email: e.Usr_Email,
 										nome: e.Usr_Nome,
 										dataEmail,
+										status: data.status,
 										tipo: 'AGENDAMENTOPROPRIETARIOBARBEARIA'
 									};
 			
-									sendEmail(data);
+									sendEmail(dataProprietario);
 								})
 						})
 					}

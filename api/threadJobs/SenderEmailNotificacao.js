@@ -2,7 +2,7 @@ import Queue from '../lib/Queue';
 
 const mysql = require('../config/mysql').pool;
 
-export function teste() {
+export function SenderEmailNotificacao() {
 	return new Promise((resolve, reject) => {
 		try {
 			mysql.getConnection((error, conn) => {

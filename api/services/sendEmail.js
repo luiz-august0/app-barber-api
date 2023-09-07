@@ -1,6 +1,7 @@
 import agendamentoBarbeiroHTML from '../htmlEmails/agendamentoBarbeiroHTML';
 import agendamentoClienteHTML from '../htmlEmails/agendamentoClienteHTML';
 import agendamentoProprietarioBarbeariaHTML from '../htmlEmails/agendamentoProprietarioBarbeariaHTML';
+import recuperacaoSenhaHTML from '../htmlEmails/recuperacaoSenhaHTML';
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
@@ -8,27 +9,25 @@ const nodemailer = require("nodemailer");
 export default async function sendEmail(data) {
     let subjectEmail = '';
     let htmlEmail = '';
-
-    const recuperacaoSub = "Recuperação de Senha";
-    const recuperacaoHtml = '<p>Olá,</p><p>Você solicitou a recuperação de senha, por gentileza, acesse o link a baixo para realizar a troca de sua senha.<br></p><p>' + 
-                            '<u>' + data.link + '</u></p>Caso você não tenha feito essa solicitação, sugerimos que verifique suas informações de segurança o quanto antes.</p>';
+    const subjectRecuperacao = "Recuperação de Senha";
+    const subjectEmailAgendamento = `${data.status!==null?"Status de Agendamento":"Agendamento de Horário"}`;
 
     switch (data.tipo) {
         case 'RECUPERACAO':
-            subjectEmail = recuperacaoSub;
-            htmlEmail = recuperacaoHtml;
+            subjectEmail = subjectRecuperacao;
+            htmlEmail = recuperacaoSenhaHTML(data.link);
             break;
         case 'AGENDAMENTOCLIENTE':
-            subjectEmail = "Agendamento de Horário";
-            htmlEmail = agendamentoClienteHTML(data.dataEmail);
+            subjectEmail = subjectEmailAgendamento;
+            htmlEmail = agendamentoClienteHTML(data.dataEmail, data.status);
             break;
         case 'AGENDAMENTOBARBEIRO':
-            subjectEmail = "Agendamento de Horário";
-            htmlEmail = agendamentoBarbeiroHTML(data.dataEmail);
+            subjectEmail = subjectEmailAgendamento;
+            htmlEmail = agendamentoBarbeiroHTML(data.dataEmail, data.status);
             break;
         case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
-            subjectEmail = "Agendamento de Horário";
-            htmlEmail = agendamentoProprietarioBarbeariaHTML(data.dataEmail, nome);
+            subjectEmail = subjectEmailAgendamento;
+            htmlEmail = agendamentoProprietarioBarbeariaHTML(data.dataEmail, data.nome, data.status);
             break;
     }
 

@@ -27,3 +27,7 @@ WHERE H.Horario >= BH.BarbH_HoraInicio
 AND H.Horario < DATE_SUB(BH.BarbH_HoraFim, INTERVAL 60 - 15 MINUTE)
 AND BH.BarbH_Dia = "SEG")
 GROUP BY Id;
+
+SELECT Agdm_Codigo FROM agendamento 
+WHERE Agdm_Data = DATE(NOW())
+AND Agdm_HoraInicio <= TIME(DATE_ADD(NOW(), INTERVAL - 60 MINUTE))

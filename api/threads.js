@@ -1,20 +1,15 @@
-import { teste } from "./threadJobs/teste";
+import { SenderEmailNotificacao } from "./threadJobs/SenderEmailNotificacao";
 
 function loopThread() {
 	setTimeout(function(){
 		setTimeout(async function(){
 			try {
-				await teste();
-				console.log('ThreadTeste executed');
+				await SenderEmailNotificacao();
+				console.log('Thread envia notificação de agendamento');
 			} catch (error) {
-				console.log('Erro: ' + error);
+				console.log('Thread envia notificação de agendamento. Erro: ' + error);
 			}
 		}, 0);
-
-		setTimeout(async function() {
-			console.log('ThreadTeste2 executed');
-		},0)
-		
 		loopThread();
 	}, 2000)
 }

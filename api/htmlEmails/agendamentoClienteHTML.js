@@ -1,10 +1,34 @@
 import formatters from "../formatters";
 
-export default (data) => {
+export default (data, status) => {
+    let statusPrint = "";
+    let statusColor = "";
+    if (status !== null) {
+        switch (status) {
+            case "RL":
+                statusPrint = "MARCADO COMO REALIZADO";
+                statusColor = "#10E805";
+                break;
+            case "R":
+                statusPrint = "RECUSADO";
+                statusColor = "#EA0800";
+                break;
+            case "C":
+                statusPrint = "CANCELADO";
+                statusColor = "#EA0800";
+                break;
+            default:
+                break;
+        }
+    }
+
+    let dataAgdm = formatters.formatStringDate(new Date(data.Agdm_Data));
+
     return `
     <p>Olá ${data.NomeCliente},</p>
 
-    <p>Esperamos que você esteja bem! É um prazer agendar um horário para atendê-lo(a) na barbearia <strong>${data.Barb_Nome}</strong>. Abaixo, você encontrará os detalhes do seu agendamento:</p>
+    <p>Esperamos que você esteja bem! ${statusPrint!==""?` O agendamento do dia ${dataAgdm} às ${data.Agdm_HoraInicio} na barbearia <strong>${data.Barb_Nome}</strong> foi <strong style="color: ${statusColor};">${statusPrint}</strong>`:
+    ` Foi realizado um agendamento na barbearia <strong>${data.Barb_Nome}</strong> para o dia ${dataAgdm} às ${data.Agdm_HoraInicio}`}. Abaixo, você encontrará os detalhes do agendamento:</p>
 
     <ul>
         <li><strong>Nome da Barbearia:</strong> ${data.Barb_Nome}</li>
@@ -16,7 +40,7 @@ export default (data) => {
         <li><strong>Descrição do Serviço:</strong> ${data.Serv_Nome}</li>
         <li><strong>Valor do Serviço:</strong> R$ ${formatters.PointPerComma(data.Serv_Valor.toFixed(2).toString())}</li>
         <li><strong>Tempo de Duração do Serviço:</strong> Aproximadamente ${data.Minutos} minutos</li>
-        <li><strong>Data do Agendamento:</strong> ${formatters.formatStringDate(new Date(data.Agdm_Data))}</li>
+        <li><strong>Data do Agendamento:</strong> ${dataAgdm}</li>
         <li><strong>Horário do Agendamento:</strong> ${data.Agdm_HoraInicio}</li>
     </ul>
 

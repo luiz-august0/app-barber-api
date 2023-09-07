@@ -104,7 +104,7 @@ class BarbeariaAgendamentoController {
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
-                                    const data = { id: result.insertId };
+                                    const data = { id: result.insertId, status: null };
 
                                     const sendEmails = async() => {
                                         await Queue.add('SenderEmailAgendamento', data);
@@ -135,6 +135,13 @@ class BarbeariaAgendamentoController {
 					`UPDATE agendamento SET Agdm_Status = "${status}" WHERE Agdm_Codigo = ${id}`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        const data = { id, status };
+
+                        const sendEmails = async() => {
+                            await Queue.add('SenderEmailAgendamento', data);
+                        }
+
+                        sendEmails();
                         return res.status(201).json(result);
                     }
                 )
