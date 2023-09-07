@@ -1,6 +1,6 @@
 import formatters from "../formatters";
 
-export default (data, nome, status) => {
+export default (data, nome, status, notificacao) => {
     let statusPrint = "";
     let statusColor = "";
     if (status !== null) {
@@ -27,8 +27,8 @@ export default (data, nome, status) => {
     return `
     <p>Olá ${nome},</p>
 
-    <p>Esperamos que você esteja bem! ${statusPrint!==""?` O agendamento do dia ${dataAgdm} às ${data.Agdm_HoraInicio} na barbearia <strong>${data.Barb_Nome}</strong> foi <strong style="color: ${statusColor};">${statusPrint}</strong>`:
-    ` Foi realizado um agendamento na barbearia <strong>${data.Barb_Nome}</strong> para o dia ${dataAgdm} às ${data.Agdm_HoraInicio}`}. Abaixo, você encontrará os detalhes do agendamento:</p>
+    <p>Esperamos que você esteja bem! ${!notificacao?`${statusPrint!==""?` O agendamento do dia ${dataAgdm} às ${data.Agdm_HoraInicio} na barbearia <strong>${data.Barb_Nome}</strong> foi <strong style="color: ${statusColor};">${statusPrint}</strong>`:
+    ` Foi realizado um agendamento na barbearia <strong>${data.Barb_Nome}</strong> para o dia ${dataAgdm} às ${data.Agdm_HoraInicio}`}`:` Gostaríamos de lembrá-lo do agendamento do dia ${dataAgdm} às ${data.Agdm_HoraInicio} na barbearia <strong>${data.Barb_Nome}</strong>`}. Abaixo, você encontrará os detalhes do agendamento:</p>
 
     <ul>
         <li><strong>Nome do Cliente:</strong> ${data.NomeCliente}</li>

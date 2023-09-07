@@ -9,8 +9,18 @@ const nodemailer = require("nodemailer");
 export default async function sendEmail(data) {
     let subjectEmail = '';
     let htmlEmail = '';
+    let subjectEmailAgendamento = '';
     const subjectRecuperacao = "Recuperação de Senha";
-    const subjectEmailAgendamento = `${data.status!==null?"Status de Agendamento":"Agendamento de Horário"}`;
+
+    if (data.status!==null) {
+        subjectEmailAgendamento = "Status de Agendamento"; 
+    }
+    else if (data.notificacao) {
+        subjectEmailAgendamento = "Lembrete de Agendamento";  
+    }
+    else {
+        subjectEmailAgendamento = "Agendamento de Horário";
+    }
 
     switch (data.tipo) {
         case 'RECUPERACAO':
@@ -19,15 +29,15 @@ export default async function sendEmail(data) {
             break;
         case 'AGENDAMENTOCLIENTE':
             subjectEmail = subjectEmailAgendamento;
-            htmlEmail = agendamentoClienteHTML(data.dataEmail, data.status);
+            htmlEmail = agendamentoClienteHTML(data.dataEmail, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOBARBEIRO':
             subjectEmail = subjectEmailAgendamento;
-            htmlEmail = agendamentoBarbeiroHTML(data.dataEmail, data.status);
+            htmlEmail = agendamentoBarbeiroHTML(data.dataEmail, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
             subjectEmail = subjectEmailAgendamento;
-            htmlEmail = agendamentoProprietarioBarbeariaHTML(data.dataEmail, data.nome, data.status);
+            htmlEmail = agendamentoProprietarioBarbeariaHTML(data.dataEmail, data.nome, data.status, data.notificacao);
             break;
     }
 

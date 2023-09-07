@@ -7,24 +7,32 @@ export function SenderEmailNotificacao() {
 		try {
 			mysql.getConnection((error, conn) => {
 				conn.query(
-					`SELECT Barb_Codigo, Barb_UF FROM barbearia WHERE Barb_UF <> "PR"`,
+					`SELECT Agdm_Codigo FROM agendamento 
+					WHERE Agdm_Data = DATE(NOW())
+					AND Agdm_HoraInicio BETWEEN TIME(DATE_ADD(NOW(), INTERVAL + 120 MINUTE)) AND TIME(DATE_ADD(NOW(), INTERVAL + 140 MINUTE))
+					AND Agdm_Notificado = "N";`,
 					(error, result, fields) => {
 						if (error) { return reject(error); }
 	
 						if (JSON.stringify(result) !== "[]") {
-							result.map((e) => {
-								const data = { id: e.Barb_Codigo };
-		
-								const queueExec = async() => {
-									//await Queue.add('Teste', data);
+							const agendamentos = result;
+
+							conn.query(
+								`UPDATE agendamento SET Agdm_Notificado = "S"
+								WHERE Agdm_Data = DATE(NOW())
+								AND Agdm_HoraInicio BETWEEN TIME(DATE_ADD(NOW(), INTERVAL + 120 MINUTE)) AND TIME(DATE_ADD(NOW(), INTERVAL + 140 MINUTE))
+								AND Agdm_Notificado = "N"`,
+								(error, result, fields) => {
+									if (error) { return reject(error); }
 								}
-		
-								queueExec();
+							)
+
+							agendamentos.map(async(e) => {
+								const data = { id: e.Agdm_Codigo, status: null, notificacao: true};
+								await Queue.add('SenderEmailAgendamento', data);
 							})
 						}
-
 						resolve();
-	
 					}
 				)
 				conn.release();

@@ -100,11 +100,11 @@ class BarbeariaAgendamentoController {
                             return res.status(405).send();
                         } else {
                             conn.query(
-                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P")`,
+                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P", "N")`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
-                                    const data = { id: result.insertId, status: null };
+                                    const data = { id: result.insertId, status: null, notificacao: false };
 
                                     const sendEmails = async() => {
                                         await Queue.add('SenderEmailAgendamento', data);
@@ -135,7 +135,7 @@ class BarbeariaAgendamentoController {
 					`UPDATE agendamento SET Agdm_Status = "${status}" WHERE Agdm_Codigo = ${id}`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
-                        const data = { id, status };
+                        const data = { id, status, notificacao: false };
 
                         const sendEmails = async() => {
                             await Queue.add('SenderEmailAgendamento', data);

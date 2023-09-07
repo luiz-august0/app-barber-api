@@ -26,6 +26,7 @@ export default {
 							email: result[0].EmailCliente,
 							dataEmail,
 							status: data.status,
+							notificacao: data.notificacao,
 							tipo: 'AGENDAMENTOCLIENTE'
 						};
 
@@ -33,6 +34,7 @@ export default {
 							email: result[0].EmailBarbeiro,
 							dataEmail,
 							status: data.status,
+							notificacao: data.notificacao,
 							tipo: 'AGENDAMENTOBARBEIRO'
 						};
 
@@ -52,6 +54,7 @@ export default {
 										nome: e.Usr_Nome,
 										dataEmail,
 										status: data.status,
+										notificacao: data.notificacao,
 										tipo: 'AGENDAMENTOPROPRIETARIOBARBEARIA'
 									};
 			
