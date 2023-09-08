@@ -68,7 +68,7 @@ class BarbeariaAgendamentoController {
         let dateNow = new Date();
         dateNow.setHours(dateNow.getHours() + 1);
 
-        if (new Date(data+"T"+horaInicio).toLocaleString() <= dateNow.toLocaleString()) {
+        if (new Date(data+"T"+horaInicio) <= dateNow) {
             return res.status(401).send();
         }
 
