@@ -77,6 +77,7 @@ CREATE TABLE agendamento(
     Agdm_Barbeiro INT NOT NULL,
     Usr_Codigo INT NOT NULL,
     Serv_Codigo INT NOT NULL,
+    Agdm_Valor FLOAT NOT NULL,
     Agdm_HoraInicio TIME NOT NULL,
     Agdm_HoraFim TIME NOT NULL,
     Agdm_Data DATE NOT NULL,

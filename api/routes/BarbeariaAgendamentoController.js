@@ -63,7 +63,7 @@ class BarbeariaAgendamentoController {
 	}
 
 	async postAgendamento(req, res) {
-		const { barbeariaID, barbeiroID, usuarioID, servicoID, tempServ, horaInicio, data } = req.body;
+		const { barbeariaID, barbeiroID, usuarioID, servicoID, servicoValor, tempServ, horaInicio, data } = req.body;
         let weekDay = formatters.DateToWeekday(data);
         let dateNow = new Date();
         dateNow.setHours(dateNow.getHours() + 1);
@@ -100,7 +100,7 @@ class BarbeariaAgendamentoController {
                             return res.status(405).send();
                         } else {
                             conn.query(
-                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P", "N")`,
+                                `INSERT INTO agendamento VALUES(NULL, ${barbeariaID}, ${barbeiroID}, ${usuarioID}, ${servicoID}, ${servicoValor}, "${horaInicio}", DATE_ADD(STR_TO_DATE("${horaInicio}", "%H:%i:%s"), INTERVAL ${tempServ} MINUTE), "${data}", "P", "N")`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
