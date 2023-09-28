@@ -178,3 +178,63 @@ FOREIGN KEY(Barb_Codigo) REFERENCES barbearia(Barb_Codigo);
 
 ALTER TABLE barbeiro_servicos ADD CONSTRAINT fk_barbeiro_servicos_servico
 FOREIGN KEY(Serv_Codigo) REFERENCES servico(Serv_Codigo);
+
+DELIMITER $$
+
+CREATE TRIGGER TR_BEFORE_DELETE_BARBEARIA 
+BEFORE DELETE ON barbearia FOR EACH ROW
+BEGIN
+    DELETE FROM agendamento WHERE Barb_Codigo = OLD.Barb_Codigo;
+	DELETE FROM barbearia_contatos WHERE Barb_Codigo = OLD.Barb_Codigo;
+    DELETE FROM barbeiro_avaliacoes WHERE UsrBarb_Codigo IN (SELECT Usr_Codigo FROM barbearia_barbeiros WHERE Barb_Codigo = OLD.Barb_Codigo);
+	DELETE FROM barbearia_avaliacoes WHERE Barb_Codigo = OLD.Barb_Codigo;
+	DELETE FROM barbeiro_servicos WHERE Barb_Codigo = OLD.Barb_Codigo;
+	DELETE FROM servico_imagens WHERE Serv_Codigo IN (
+		SELECT s.Serv_Codigo FROM servico s
+		INNER JOIN servico_categorias sc
+		ON s.ServCat_Codigo = sc.ServCat_Codigo
+		WHERE sc.Barb_Codigo = OLD.Barb_Codigo
+	);
+	DELETE FROM servico WHERE ServCat_Codigo IN (SELECT ServCat_Codigo FROM servico_categorias WHERE Barb_Codigo = OLD.Barb_Codigo);
+	DELETE FROM servico_categorias WHERE Barb_Codigo = OLD.Barb_Codigo;
+	DELETE FROM barbearia_barbeiros WHERE Barb_Codigo = OLD.Barb_Codigo;
+    DELETE FROM barbearia_proprietarios WHERE Barb_Codigo = OLD.Barb_Codigo;
+    DELETE FROM barbearia_horarios WHERE Barb_Codigo = OLD.Barb_Codigo;
+END$$    
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER TR_AFTER_DELETE_BARBEARIA_BARBEIROS 
+AFTER DELETE ON barbearia_barbeiros FOR EACH ROW
+BEGIN
+	DELETE FROM usuario WHERE Usr_Codigo IN (
+		SELECT Usr_Codigo FROM barbearia_barbeiros 
+		WHERE Barb_Codigo = OLD.Barb_Codigo
+		AND Usr_Codigo = OLD.Usr_Codigo
+		AND Usr_Codigo NOT IN (
+			SELECT Usr_Codigo FROM barbearia_proprietarios
+			WHERE Barb_Codigo = OLD.Barb_Codigo
+		)
+	);
+END$$    
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER TR_BEFORE_DELETE_USUARIO
+BEFORE DELETE ON usuario FOR EACH ROW
+BEGIN
+	DELETE FROM barbearia_proprietarios WHERE Usr_Codigo = OLD.Usr_Codigo;
+	DELETE FROM agendamento WHERE Agdm_Barbeiro = OLD.Usr_Codigo OR Usr_Codigo = OLD.Usr_Codigo;
+	DELETE FROM barbearia_barbeiros WHERE Usr_Codigo = OLD.Usr_Codigo;
+	DELETE FROM barbeiro_avaliacoes WHERE Usr_Codigo = OLD.Usr_Codigo OR UsrBarb_Codigo = OLD.Usr_Codigo;
+	DELETE FROM barbearia_avaliacoes WHERE Usr_Codigo = OLD.Usr_Codigo;
+	DELETE FROM barbeiro_servicos WHERE Usr_Codigo = OLD.Usr_Codigo;
+END$$    
+
+DELIMITER ;
