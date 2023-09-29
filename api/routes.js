@@ -49,7 +49,7 @@ routes.post('/usuario/perfil/:id', (req, res) => {
 		})
 		.catch((err) => res.status(500).json(err));
 });
-routes.delete('/usuario/:id', UsuarioController.destroy);
+routes.delete('/usuario/:id', UsuarioController.deleteUsuario);
 
 //Rotas barbearia
 routes.post('/barbearia/pesquisa', BarbeariaController.getBarbearias);

@@ -243,35 +243,34 @@ class UsuarioController {
         }
     }
 
-    async destroy(req, res) {
-        try {
-            const { id } = req.params;
+    async deleteUsuario(req, res) {
+		const { id } = req.params;
 
+        try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT * FROM usuario WHERE Usr_Codigo = "${id}"`,
+                    `SELECT Agdm_Codigo FROM agendamento WHERE Usr_Codigo = ${id} AND Agdm_Data >= NOW() AND Agdm_Status NOT IN ('C', 'R', 'RL')`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
 
-                        if (JSON.stringify(result) === '[]') {
-                            return res.status(404).json('Usuário não encontrado');
-                        } else {
+                        if (JSON.stringify(result) == "[]") {
                             conn.query(
-                                `DELETE FROM usuario WHERE Usr_Codigo = "${id}"`,
+                                `DELETE FROM usuario WHERE Usr_Codigo = ${id}`,
                                 (error, result, fields) => {
                                     if (error) { console.log(error); return res.status(500).send({ error: error }) }
-                                    return res.status(201).json(result);
                                 }
                             )
+                            return res.status(201).json(result);
+                        } else {
+                            return res.status(401).json();
                         }
                     }
                 )
                 conn.release();
-            });
-
-        } catch (err) {
+            })
+        } catch(err) {
             console.error(err);
-            return res.status(500).json({ error: "Internal server error." });
+            return res.status(500).json({ error: "Internal server error." })
         }
     }
 
