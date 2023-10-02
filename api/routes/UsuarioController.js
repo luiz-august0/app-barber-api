@@ -372,6 +372,26 @@ class UsuarioController {
             return res.status(500).json({ error: "Internal server error." });
         }
     }
+
+    async getUsuarioClienteByNome(req, res) {
+        try {
+            const { nome } = req.query;
+
+            mysql.getConnection((error, conn) => {
+                conn.query(
+                    `SELECT Usr_Codigo, Usr_Email, Usr_Nome, Usr_Contato, Usr_FotoPerfil FROM usuario WHERE Usr_Nome LIKE "%${nome}%" AND Usr_Tipo = "C" LIMIT 50`,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        return res.status(201).json(result);
+                    }
+                )
+            })
+
+        } catch (error) {
+            console.log(err);
+            return res.status(500).json({ error: "Internal server error." });
+        }
+    }
     
 }
 

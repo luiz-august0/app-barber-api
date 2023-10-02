@@ -50,6 +50,7 @@ routes.post('/usuario/perfil/:id', (req, res) => {
 		.catch((err) => res.status(500).json(err));
 });
 routes.delete('/usuario/:id', UsuarioController.deleteUsuario);
+routes.get('/usuario/cliente/pesquisa', UsuarioController.getUsuarioClienteByNome);
 
 //Rotas barbearia
 routes.post('/barbearia/pesquisa', BarbeariaController.getBarbearias);
