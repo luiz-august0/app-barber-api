@@ -78,17 +78,19 @@ routes.post('/barbearia/logo/:id', (req, res) => {
 		})
 		.catch((err) => res.status(500).json(err));
 });
-routes.get('/barbearia_horarios', BarbeariaHorariosController.getHorarios);
+routes.get('/horarios', BarbeariaHorariosController.getHorarios);
 routes.post('/barbearia/horariodia/pesquisa/:id', BarbeariaHorariosController.getBarbeariaHorariosDia);
 routes.post('/barbearia/horariodia/envia/:id', BarbeariaHorariosController.postBarbeariaHorarioDia);
 routes.post('/barbearia/horariodia/atualiza/:id', BarbeariaHorariosController.updateBarbeariaHorarioDia);
 routes.delete('/barbearia/horariodia/remove/:id', BarbeariaHorariosController.deleteBarbeariaHorarioDia);
 routes.get('/barbearia/categoria/:id', BarbeariaServicosController.getBarbeariaCategorias);
+routes.get('/barbearia/barbeiro/categoria', BarbeariaServicosController.getBarbeariaCategoriasByBarbeiro);
 routes.get('/barbearia/categoria/id/:id', BarbeariaServicosController.showBarbeariaCategoria);
 routes.post('/barbearia/categoria', BarbeariaServicosController.postBarbeariaCategoria);
 routes.put('/barbearia/categoria/:id', BarbeariaServicosController.updateBarbeariaCategoria);
 routes.delete('/barbearia/categoria/:id', BarbeariaServicosController.deleteBarbeariaCategoria);
 routes.get('/barbearia/servicoscategoria/:id', BarbeariaServicosController.getBarbeariaCategoriaServicos);
+routes.get('/barbearia/barbeiro/servicoscategoria', BarbeariaServicosController.getBarbeariaCategoriaServicosByBarbeiro);
 routes.get('/barbearia/servico/:id', BarbeariaServicosController.showBarbeariaServico);
 routes.post('/barbearia/servico', BarbeariaServicosController.postBarbeariaServico);
 routes.put('/barbearia/servico/:id', BarbeariaServicosController.updateBarbeariaServico);

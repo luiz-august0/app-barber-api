@@ -21,6 +21,34 @@ class BarbeariaServicosController {
         }
     }
 
+    async getBarbeariaCategoriasByBarbeiro(req, res) {
+        const { barbeariaID, barbeiroID } = req.query;
+
+        try {
+            mysql.getConnection((error, conn) => {
+                conn.query(
+                    `SELECT SC.* FROM servico_categorias SC
+                     INNER JOIN servico S
+                     ON SC.ServCat_Codigo = S.ServCat_Codigo 
+                     INNER JOIN barbeiro_servicos BS
+                     ON S.Serv_Codigo = BS.Serv_Codigo
+                     AND SC.Barb_Codigo = BS.Barb_Codigo 
+                     WHERE SC.Barb_Codigo = ${barbeariaID}
+                     AND BS.Usr_Codigo = ${barbeiroID}
+                     GROUP BY SC.ServCat_Codigo;`,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        return res.status(201).json(result);
+                    }
+                )
+                conn.release();
+            })
+        } catch(err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." })
+        }
+    }
+
     async showBarbeariaCategoria(req, res) {
         const { id } = req.params;
 
@@ -144,6 +172,31 @@ class BarbeariaServicosController {
             mysql.getConnection((error, conn) => {
                 conn.query(
                     `SELECT *, FORMAT(TIME_TO_SEC(Serv_Duracao) / 60,0) AS Minutos FROM servico WHERE ServCat_Codigo = ${id}`,
+                    (error, result, fields) => {
+                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                        return res.status(201).json(result);
+                    }
+                )
+                conn.release();
+            })
+        } catch(err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal server error." })
+        }
+    }
+
+    async getBarbeariaCategoriaServicosByBarbeiro(req, res) {
+        const { categoriaID, barbeiroID } = req.query;
+
+        try {
+            mysql.getConnection((error, conn) => {
+                conn.query(
+                    `SELECT S.*, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos FROM servico S 
+                     INNER JOIN barbeiro_servicos BS
+                     ON S.Serv_Codigo = BS.Serv_Codigo
+                     WHERE S.ServCat_Codigo = ${categoriaID}
+                     AND BS.Usr_Codigo = ${barbeiroID}
+                     GROUP BY S.Serv_Codigo`,
                     (error, result, fields) => {
                         if (error) { console.log(error); return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);

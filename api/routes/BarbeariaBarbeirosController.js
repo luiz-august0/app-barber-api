@@ -8,12 +8,20 @@ class BarbeariaBarbeirosController {
             mysql.getConnection((error, conn) => {
                 conn.query(
 					`INSERT INTO barbearia_barbeiros SET Barb_Codigo = ${barbeariaID}, Usr_Codigo = ${usuarioID}, BarbB_Especialidade = "${especialidade}"`,
-                    (error, result, fields) => {
-                        if (error) { console.log(error); return res.status(500).send({ error: error }) }
-                        return res.status(201).json(result);
-                    }
+                    (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } } 
                 )
+
+                conn.query(
+                    `INSERT INTO barbeiro_servicos 
+                     SELECT ${usuarioID}, ${barbeariaID}, Serv_Codigo FROM servico S 
+                     INNER JOIN servico_categorias SC
+                     ON S.ServCat_Codigo = SC.ServCat_Codigo 
+                     WHERE SC.Barb_Codigo = ${barbeariaID}`,
+                     (error, result, fields) => { if (error) { console.log(error); return res.status(500).send({ error: error }) } } 
+                )
+
                 conn.release();
+                return res.status(201).json();
             })
         } catch(err) {
             console.error(err);
