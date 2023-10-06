@@ -20,6 +20,7 @@
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
+    "venom-bot": "^5.0.21",
     "vercel": "^28.15.2"
   },
   "devDependencies": {
