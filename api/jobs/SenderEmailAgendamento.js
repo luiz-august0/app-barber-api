@@ -1,4 +1,4 @@
-import sendEmail from '../services/sendEmail';
+import { sendEmail, sendMessageWP } from '../services/senderNotification';
 
 const mysql = require('../config/mysql').pool;
 
@@ -20,11 +20,11 @@ export default {
 					WHERE AG.Agdm_Codigo = ${data.id}`,
 					(error, result, fields) => {
 						if (error) { console.log(error) }
-						const dataEmail = result[0];
+						const dataNotificacao = result[0];
 
 						const dataCliente = {
 							email: result[0].EmailCliente,
-							dataEmail,
+							dataNotificacao,
 							status: data.status,
 							notificacao: data.notificacao,
 							tipo: 'AGENDAMENTOCLIENTE'
@@ -32,7 +32,7 @@ export default {
 
 						const dataBarbeiro = {
 							email: result[0].EmailBarbeiro,
-							dataEmail,
+							dataNotificacao,
 							status: data.status,
 							notificacao: data.notificacao,
 							tipo: 'AGENDAMENTOBARBEIRO'
@@ -40,25 +40,29 @@ export default {
 
 						sendEmail(dataCliente);
 						sendEmail(dataBarbeiro);
+						sendMessageWP(dataCliente);
+						sendMessageWP(dataBarbeiro);
 
 						conn.query(
-							`SELECT U.Usr_Email, U.Usr_Nome FROM barbearia_proprietarios BP
+							`SELECT U.Usr_Email, U.Usr_Nome, U.Usr_Contato FROM barbearia_proprietarios BP
 							INNER JOIN usuario U ON BP.Usr_Codigo = U.Usr_Codigo
-							WHERE BP.Barb_Codigo = ${dataEmail.Barb_Codigo}
-							AND BP.Usr_Codigo <> ${dataEmail.Agdm_Barbeiro}`,
+							WHERE BP.Barb_Codigo = ${dataNotificacao.Barb_Codigo}
+							AND BP.Usr_Codigo <> ${dataNotificacao.Agdm_Barbeiro}`,
 							(error, result, fields) => {
 								if (error) { console.log(error) }
 								result.map((e) => {
 									const dataProprietario = {
 										email: e.Usr_Email,
 										nome: e.Usr_Nome,
-										dataEmail,
+										contato: e.Usr_Contato,
+										dataNotificacao,
 										status: data.status,
 										notificacao: data.notificacao,
 										tipo: 'AGENDAMENTOPROPRIETARIOBARBEARIA'
 									};
 			
 									sendEmail(dataProprietario);
+									sendMessageWP(dataProprietario);
 								})
 						})
 					}

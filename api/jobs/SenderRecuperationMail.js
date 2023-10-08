@@ -1,4 +1,4 @@
-import sendEmail from "../services/sendEmail";
+import sendEmail from "../services/senderNotification";
 
 export default {
 	key: 'SenderRecuperationMail',
