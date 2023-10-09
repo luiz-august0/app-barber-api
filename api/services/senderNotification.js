@@ -1,15 +1,14 @@
+import axios from 'axios';
 import agendamentoBarbeiroHTML from '../htmlEmails/agendamentoBarbeiroHTML';
 import agendamentoClienteHTML from '../htmlEmails/agendamentoClienteHTML';
 import agendamentoProprietarioBarbeariaHTML from '../htmlEmails/agendamentoProprietarioBarbeariaHTML';
 import recuperacaoSenhaHTML from '../htmlEmails/recuperacaoSenhaHTML';
-import { WpVenom, sendMessage } from './wpVenom';
-
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
-const wpVenom = new WpVenom();
-wpVenom.setClient();
-const wpCliente = wpVenom.client;
+const api = axios.create({
+    baseURL: "http://localhost:6000"
+});
 
 export async function sendEmail(data) {
     let subjectEmail = '';
@@ -85,6 +84,11 @@ export async function sendMessageWP(data) {
     }
 
     if (subjectContact!==null) {
-        return await sendMessage(wpCliente, subjectContact, htmlMessage);
+        try {
+            api.post('/barberwp/mensagem', { contact: subjectContact, message: htmlMessage });
+            return;
+        } catch (error) {
+            return error;
+        }
     }
 }
