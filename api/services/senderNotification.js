@@ -3,6 +3,9 @@ import agendamentoBarbeiroHTML from '../htmlEmails/agendamentoBarbeiroHTML';
 import agendamentoClienteHTML from '../htmlEmails/agendamentoClienteHTML';
 import agendamentoProprietarioBarbeariaHTML from '../htmlEmails/agendamentoProprietarioBarbeariaHTML';
 import recuperacaoSenhaHTML from '../htmlEmails/recuperacaoSenhaHTML';
+import agendamentoClienteWP from '../wpMensagens/agendamentoClienteWP';
+import agendamentoBarbeiroWP from '../wpMensagens/agendamentoBarbeiroWP';
+import agendamentoProprietarioBarbeariaWP from '../wpMensagens/agendamentoProprietarioBarbeariaWP';
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
@@ -71,19 +74,19 @@ export async function sendMessageWP(data) {
     switch (data.tipo) {
         case 'AGENDAMENTOCLIENTE':
             subjectContact = data.dataNotificacao.ContatoCliente;
-            htmlMessage = agendamentoClienteHTML(data.dataNotificacao, data.status, data.notificacao);
+            htmlMessage = agendamentoClienteWP(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOBARBEIRO':
             subjectContact = data.dataNotificacao.ContatoBarbeiro;
-            htmlMessage = agendamentoBarbeiroHTML(data.dataNotificacao, data.status, data.notificacao);
+            htmlMessage = agendamentoBarbeiroWP(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
             subjectContact = data.contato;
-            htmlMessage = agendamentoProprietarioBarbeariaHTML(data.dataNotificacao, data.nome, data.status, data.notificacao);
+            htmlMessage = agendamentoProprietarioBarbeariaWP(data.dataNotificacao, data.nome, data.status, data.notificacao);
             break;
     }
 
-    if (subjectContact!==null) {
+    if (subjectContact!==null&&subjectContact!=="") {
         try {
             api.post('/barberwp/mensagem', { contact: subjectContact, message: htmlMessage });
             return;
