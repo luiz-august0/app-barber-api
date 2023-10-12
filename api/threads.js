@@ -1,10 +1,10 @@
-import { SenderEmailNotificacao } from "./threadJobs/SenderEmailNotificacao";
+import { SenderAgendamentoNotification } from "./threadJobs/SenderAgendamentoNotification";
 
 function loopThread() {
 	setTimeout(function(){
 		setTimeout(async function(){
 			try {
-				await SenderEmailNotificacao();
+				await SenderAgendamentoNotification();
 				console.log('Thread envia notificação de agendamento');
 			} catch (error) {
 				console.log('Thread envia notificação de agendamento. Erro: ' + error);

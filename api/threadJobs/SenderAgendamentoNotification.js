@@ -2,10 +2,12 @@ import Queue from '../lib/Queue';
 
 const mysql = require('../config/mysql').pool;
 
-export function SenderEmailNotificacao() {
+export function SenderAgendamentoNotification() {
 	return new Promise((resolve, reject) => {
 		try {
 			mysql.getConnection((error, conn) => {
+				if (error) return reject(error); 
+
 				conn.query(
 					`SELECT Agdm_Codigo FROM agendamento 
 					WHERE Agdm_Data = DATE(NOW())
@@ -29,13 +31,13 @@ export function SenderEmailNotificacao() {
 
 							agendamentos.map(async(e) => {
 								const data = { id: e.Agdm_Codigo, status: null, notificacao: true};
-								await Queue.add('SenderEmailAgendamento', data);
+								await Queue.add('SenderAgendamentoNotification', data);
 							})
 						}
-						resolve();
 					}
 				)
 				conn.release();
+				return resolve();
 			})
 		} catch(err) {
 			return reject(err);

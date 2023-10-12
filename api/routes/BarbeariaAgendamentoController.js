@@ -107,7 +107,7 @@ class BarbeariaAgendamentoController {
                                     const data = { id: result.insertId, status: null, notificacao: false };
 
                                     const sendEmails = async() => {
-                                        await Queue.add('SenderEmailAgendamento', data);
+                                        await Queue.add('SenderAgendamentoNotification', data);
                                     }
 
                                     sendEmails();
@@ -138,7 +138,7 @@ class BarbeariaAgendamentoController {
                         const data = { id, status, notificacao: false };
 
                         const sendEmails = async() => {
-                            await Queue.add('SenderEmailAgendamento', data);
+                            await Queue.add('SenderAgendamentoNotification', data);
                         }
 
                         sendEmails();

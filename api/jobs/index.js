@@ -1,2 +1,2 @@
 export { default as SenderRecuperationMail } from './SenderRecuperationMail';
-export { default as SenderEmailAgendamento } from './SenderEmailAgendamento';
+export { default as SenderAgendamentoNotification } from './SenderAgendamentoNotification';

@@ -23,7 +23,7 @@ createBullBoard({
 
 const routes = new Router();
 
-routes.use('/admin/queues/99817', serverAdapter.getRouter());
+routes.use('/admin/queues', serverAdapter.getRouter());
 routes.post('/usuario', UsuarioController.create);
 routes.post('/usuario/verifica', UsuarioController.verify);
 routes.post('/usuario/email/recuperacao', UsuarioController.postEnviaEmailRecuperacaoSenha);

@@ -58,7 +58,6 @@ export async function sendEmail(data) {
         },
     });
     
-    
     return await transporter.sendMail({
         from: "Suporte Barbeiro App",
         to: data.email,
@@ -69,29 +68,24 @@ export async function sendEmail(data) {
 
 export async function sendMessageWP(data) {
     let subjectContact = '';
-    let htmlMessage = '';
+    let wpMessage = '';
 
     switch (data.tipo) {
         case 'AGENDAMENTOCLIENTE':
             subjectContact = data.dataNotificacao.ContatoCliente;
-            htmlMessage = agendamentoClienteWP(data.dataNotificacao, data.status, data.notificacao);
+            wpMessage = agendamentoClienteWP(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOBARBEIRO':
             subjectContact = data.dataNotificacao.ContatoBarbeiro;
-            htmlMessage = agendamentoBarbeiroWP(data.dataNotificacao, data.status, data.notificacao);
+            wpMessage = agendamentoBarbeiroWP(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
             subjectContact = data.contato;
-            htmlMessage = agendamentoProprietarioBarbeariaWP(data.dataNotificacao, data.nome, data.status, data.notificacao);
+            wpMessage = agendamentoProprietarioBarbeariaWP(data.dataNotificacao, data.nome, data.status, data.notificacao);
             break;
     }
 
     if (subjectContact!==null&&subjectContact!=="") {
-        try {
-            api.post('/barberwp/mensagem', { contact: subjectContact, message: htmlMessage });
-            return;
-        } catch (error) {
-            return error;
-        }
+        return await api.post('/barberwp/mensagem', { contact: subjectContact, message: wpMessage });
     }
 }
