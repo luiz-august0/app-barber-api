@@ -17,7 +17,7 @@ class WPController {
                 await venomClient.sendText('55' + contact + '@c.us', message);   
                 return res.status(201).json(); 
             } catch (error) {
-                return res.status(500).json({ error })
+                return res.status(error.status).json(error.text)
             }
         } else {
             return res.status(404).json({ error: "Venom client não foi instanciado" })
