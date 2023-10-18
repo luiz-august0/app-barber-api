@@ -6,7 +6,7 @@ const mysql = require('../config/mysql').pool;
 class SessionController {
     async create(req, res) {
         try {
-            const { email, senha } = req.body;
+            const { email, senha, tokenNotificacao } = req.body;
 
             mysql.getConnection((error, conn) => {
                 conn.query(
@@ -30,6 +30,22 @@ class SessionController {
                         }
 
                         const id = JSON.stringify(result[0].Usr_Codigo);
+
+                        if (tokenNotificacao.toString() !== "") {
+                            conn.query(
+                                `DELETE FROM usuario_token_notificacao_app WHERE Token = "${tokenNotificacao}"`,
+                                (error, result, fields) => {
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                }
+                            )
+
+                            conn.query(
+                                `INSERT IGNORE INTO usuario_token_notificacao_app VALUES (${id}, "${tokenNotificacao}")`,
+                                (error, result, fields) => {
+                                    if (error) { console.log(error); return res.status(500).send({ error: error }) }
+                                }
+                            )
+                        } 
 
                         return res.json({
                             usuario: {

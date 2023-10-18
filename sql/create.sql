@@ -9,6 +9,11 @@ CREATE TABLE usuario(
     Usr_FotoPerfil VARCHAR(255)
 );
 
+CREATE TABLE usuario_token_notificacao_app (
+    Usr_Codigo INT NOT NULL,
+    Token VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE barbearia(
     Barb_Codigo INT PRIMARY KEY AUTO_INCREMENT,
     Barb_Nome VARCHAR(255) NOT NULL,
@@ -178,6 +183,9 @@ FOREIGN KEY(Barb_Codigo) REFERENCES barbearia(Barb_Codigo);
 
 ALTER TABLE barbeiro_servicos ADD CONSTRAINT fk_barbeiro_servicos_servico
 FOREIGN KEY(Serv_Codigo) REFERENCES servico(Serv_Codigo);
+
+ALTER TABLE usuario_token_notificacao_app ADD CONSTRAINT fk_usuario_token_notificacao_app
+FOREIGN KEY(Usr_Codigo) REFERENCES usuario(Usr_Codigo);
 
 DELIMITER $$
 

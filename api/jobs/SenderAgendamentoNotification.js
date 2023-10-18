@@ -17,8 +17,8 @@ function sendNotification(data) {
 			try {				
 				conn.query(
 					`SELECT AG.*, B.Barb_Nome, B.Barb_Cidade, B.Barb_CEP, B.Barb_UF, B.Barb_Rua, B.Barb_Numero, B.Barb_Bairro, 
-					Barb_GeoLatitude, B.Barb_GeoLongitude, B.Barb_LogoUrl, UB.Usr_Email AS EmailBarbeiro, UB.Usr_Nome AS NomeBarbeiro,
-					UB.Usr_Contato AS ContatoBarbeiro, UB.Usr_FotoPerfil AS FotoBarbeiro, UU.Usr_Email AS EmailCliente, UU.Usr_Nome AS NomeCliente,
+					Barb_GeoLatitude, B.Barb_GeoLongitude, B.Barb_LogoUrl, UB.Usr_Codigo AS CodigoBarbeiro, UB.Usr_Email AS EmailBarbeiro, UB.Usr_Nome AS NomeBarbeiro,
+					UB.Usr_Contato AS ContatoBarbeiro, UB.Usr_FotoPerfil AS FotoBarbeiro, UU.Usr_Codigo AS CodigoCliente, UU.Usr_Email AS EmailCliente, UU.Usr_Nome AS NomeCliente,
 					UU.Usr_Contato AS ContatoCliente, UU.Usr_FotoPerfil AS FotoCliente, S.Serv_Nome, AG.Agdm_Valor AS Serv_Valor, FORMAT(TIME_TO_SEC(S.Serv_Duracao) / 60,0) AS Minutos
 					FROM agendamento AG
 					INNER JOIN barbearia B ON AG.Barb_Codigo = B.Barb_Codigo 
@@ -50,7 +50,7 @@ function sendNotification(data) {
 						sendMessagesAndEmails(dataBarbeiro);
 												
 						conn.query(
-							`SELECT U.Usr_Email, U.Usr_Nome, U.Usr_Contato FROM barbearia_proprietarios BP
+							`SELECT U.Usr_Codigo, U.Usr_Email, U.Usr_Nome, U.Usr_Contato FROM barbearia_proprietarios BP
 							INNER JOIN usuario U ON BP.Usr_Codigo = U.Usr_Codigo
 							WHERE BP.Barb_Codigo = ${dataNotificacao.Barb_Codigo}
 							AND BP.Usr_Codigo <> ${dataNotificacao.Agdm_Barbeiro}`,
