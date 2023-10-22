@@ -1,4 +1,4 @@
-import { sendEmail, sendMessageWP } from '../services/senderNotification';
+import { sendEmail, sendMessageWP, sendPushNotification } from '../services/senderNotification';
 
 const mysql = require('../config/mysql').pool;
 
@@ -6,11 +6,10 @@ function sendNotification(data) {
 	async function sendMessagesAndEmails(dataSend) {
 		await sendEmail(dataSend).catch((error) => console.log(`AgendamentoID: ${data.id}, ERROR: ${error}`));
 		await sendMessageWP(dataSend).catch((error) => console.log(`AgendamentoID: ${data.id}, ERROR: ${error}`));
+		await sendPushNotification(dataSend).catch((error) => console.log(`AgendamentoID: ${data.id}, ERROR: ${error}`));
 	}
 
 	return new Promise((resolve, reject) => {
-		let errors = [];
-
 		mysql.getConnection((error, conn) => {
 			if (error) return reject(error);
 
@@ -31,6 +30,7 @@ function sendNotification(data) {
 						const dataNotificacao = result[0];
 	
 						const dataCliente = {
+							id: result[0].CodigoCliente,
 							email: result[0].EmailCliente,
 							dataNotificacao,
 							status: data.status,
@@ -39,6 +39,7 @@ function sendNotification(data) {
 						};
 	
 						const dataBarbeiro = {
+							id: result[0].CodigoBarbeiro,
 							email: result[0].EmailBarbeiro,
 							dataNotificacao,
 							status: data.status,
@@ -59,6 +60,7 @@ function sendNotification(data) {
 
 								result.map((e) => {
 									const dataProprietario = {
+										id: result[0].Usr_Codigo,
 										email: e.Usr_Email,
 										nome: e.Usr_Nome,
 										contato: e.Usr_Contato,
@@ -71,7 +73,7 @@ function sendNotification(data) {
 									sendMessagesAndEmails(dataProprietario);
 								})
 
-								return resolve(errors);
+								return resolve();
 							}
 						)
 					}

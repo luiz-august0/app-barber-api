@@ -6,9 +6,13 @@ import recuperacaoSenhaHTML from '../htmlEmails/recuperacaoSenhaHTML';
 import agendamentoClienteWP from '../wpMensagens/agendamentoClienteWP';
 import agendamentoBarbeiroWP from '../wpMensagens/agendamentoBarbeiroWP';
 import agendamentoProprietarioBarbeariaWP from '../wpMensagens/agendamentoProprietarioBarbeariaWP';
+import agendamentoClientePUSH from '../pushNotificationMensagens/agendamentoClientePUSH';
+import agendamentoBarbeiroPUSH from '../pushNotificationMensagens/agendamentoBarbeiroPUSH';
+import agendamentoProprietarioBarbeariaPUSH from '../pushNotificationMensagens/agendamentoProprietarioBarbeariaPUSH';
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
+const mysql = require('../config/mysql').pool;
 const apiWP = axios.create({
     baseURL: "http://localhost:6000"
 });
@@ -94,9 +98,8 @@ export async function sendMessageWP(data) {
     }
 }
 
-export async function sendMessageWP(data) {
-    let subjectToken = '';
-    let wpMessage = '';
+export async function sendPushNotification(data) {
+    let pushMessage = '';
     let notificationTitle = '';
 
     if (data.status!==null) {
@@ -111,20 +114,42 @@ export async function sendMessageWP(data) {
 
     switch (data.tipo) {
         case 'AGENDAMENTOCLIENTE':
-            subjectToken = data.dataNotificacao.ContatoCliente;
-            wpMessage = agendamentoClienteWP(data.dataNotificacao, data.status, data.notificacao);
+            pushMessage = agendamentoClientePUSH(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOBARBEIRO':
-            subjectToken = data.dataNotificacao.ContatoBarbeiro;
-            wpMessage = agendamentoBarbeiroWP(data.dataNotificacao, data.status, data.notificacao);
+            pushMessage = agendamentoBarbeiroPUSH(data.dataNotificacao, data.status, data.notificacao);
             break;
         case 'AGENDAMENTOPROPRIETARIOBARBEARIA':
-            subjectToken = data.contato;
-            wpMessage = agendamentoProprietarioBarbeariaWP(data.dataNotificacao, data.nome, data.status, data.notificacao);
+            pushMessage = agendamentoProprietarioBarbeariaPUSH(data.dataNotificacao, data.nome, data.status, data.notificacao);
             break;
     }
 
-    if (subjectToken!==null&&subjectToken!=="") {
-        return await apiExpo.post('/--/api/v2/push/send', { to: subjectToken, title: notificationTitle, body: wpMessage });
+    function sendPush() {
+        return new Promise((resolve, reject) => {
+            mysql.getConnection((error, conn) => {
+                if (error) return reject(error);
+    
+                try {				
+                    conn.query(
+                        `SELECT Token FROM usuario_token_notificacao_app WHERE Usr_Codigo = ${data.id}`,
+                        (error, result, fields) => {
+                            if (error) return reject(error);
+                            if (result.length > 0) {
+                                result.map(async(e) => {
+                                    await apiExpo.post('/--/api/v2/push/send', { to: e.Token, title: notificationTitle, body: pushMessage });
+                                })
+                            }
+
+                            return resolve();                     
+                        }
+                    )
+                    conn.release();
+                } catch (error) {
+                    return reject(error)
+                }
+            })
+        })
     }
+
+    return await sendPush();
 }
