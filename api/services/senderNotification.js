@@ -14,7 +14,7 @@ require('dotenv').config();
 const nodemailer = require("nodemailer");
 const mysql = require('../config/mysql').pool;
 const apiWP = axios.create({
-    baseURL: "http://localhost:6000"
+    baseURL: process.env.APIWP_URL
 });
 
 const apiExpo = axios.create({
@@ -94,7 +94,7 @@ export async function sendMessageWP(data) {
     }
 
     if (subjectContact!==null&&subjectContact!=="") {
-        return await apiWP.post('/barberwp/mensagem', { contact: subjectContact, message: wpMessage });
+        return await apiWP.post('/wpvenom/mensagem', { contact: subjectContact, message: wpMessage });
     }
 }
 
